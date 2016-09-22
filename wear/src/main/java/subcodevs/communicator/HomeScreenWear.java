@@ -56,6 +56,12 @@ public class HomeScreenWear extends BaseActivity implements
         mAssistance = (ImageView) findViewById(R.id.assistanceID);
         mAssistance.setOnClickListener(this);
         mMessage.setOnClickListener(this);
+        if(PrefrensUtils.getDeviceToken(this).isEmpty()){
+            showChangeLangDialog(this,"Something went wrong. Please make sure that your Apple Watch is paired properly with your iPhone.","Error");
+        }
+        if(PrefrensUtils.getLat(this).isEmpty()){
+            showChangeLangDialog(this,"Seems like location services are not enabled for this app in your iPhone. Please enable the same and try again.","Error");
+        }
         RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
     }
 
@@ -102,13 +108,7 @@ public class HomeScreenWear extends BaseActivity implements
     public void responseListener(Object o,String callType) {
         stopProgress();
         System.out.println("ResponseHomeScreenWEAR" + o.toString());
-        Gson gson = new Gson();
-        if(callType.equals("pushNotificationRequest")){
-            PushToken response = gson.fromJson(o.toString(), PushToken.class);
-            if(response!=null){
-              PrefrensUtils.setMDDeviceToken(HomeScreenWear.this,response.getMdDeviceToken());
-            }
-        }else if(callType.equals("UpdateLocationRequest")){
+         if(callType.equals("UpdateLocationRequest")){
 
 
         }else if(callType.equals("requestAssistance")){
@@ -116,7 +116,7 @@ public class HomeScreenWear extends BaseActivity implements
                 JSONObject json = new JSONObject(o.toString());
                 String type =json.getString("type");
                 if(type.equals("assistance")){
-                    buildAlertMessage(this,"Concerned people have been informed.They will contact you soon.");
+                    showChangeLangDialog(this,"Concerned people have been informed.They will contact you soon.","Success");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -130,7 +130,12 @@ public class HomeScreenWear extends BaseActivity implements
     public void errorListener(VolleyError error) {
         System.out.println("ResponseHomeScreen" + error.getMessage());
         stopProgress();
-        handleErrorCase(this, error.networkResponse.statusCode);
+        try {
+            handleErrorCase(this, error.networkResponse.statusCode);
+        }catch (Exception e){
+            handleErrorCase(this, 101);
+        }
+
     }
 
 

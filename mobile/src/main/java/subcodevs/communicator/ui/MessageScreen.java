@@ -10,7 +10,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import apputils.PrefrensUtils;
 import commonmodules.BaseActivityWear;
 import databasequery.DataBaseQuery;
 import databasequery.DatabaseHelper;
+import model.DatabaseToJSON;
+import model.MessageResponse;
 import model.MessageResponseFirst;
 import model.MessageResposneDatabase;
 import subcodevs.communicator.HomeScreen;
@@ -103,14 +107,6 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
             }
         };
         handler.postDelayed(r, 2000);
-
-
-//        try {
-//            DatabaseHelper.copyDatabaseToSdCard();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Log.v("messages",msg.toString());
     }
 
 
@@ -132,18 +128,7 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
 
     @Override
     public void onConnected(Bundle bundle) {
-        //  DatabaseToJSON dbJson = new DatabaseToJSON(HomeScreen.this);
-        try {
-            //  JSONObject json = dbJson.getJSON();
-            JSONObject mJosn = new JSONObject();
-//            mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
-//            mJosn.put("lat",mLastLocation.getLatitude());
-//            mJosn.put("long",mLastLocation.getLongitude());
-//            mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
-//            new SendToDataLayerThread("/path", mJosn.toString()).start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -156,6 +141,44 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
 
     }
 
+
+    private JSONArray sendDataToWatch(){
+        JSONArray jsonArray = new JSONArray();
+        try {
+            ArrayList<MessageResposneDatabase> messageResponseArrayList = DataBaseQuery.getMessageResponse();
+
+            if(messageResponseArrayList.size()!=0){
+                if(messageResponseArrayList.size()>10){
+                    for(int i=0;i<10;i++){
+                        JSONObject mJsonObject = new JSONObject();
+                        mJsonObject.put("id",messageResponseArrayList.get(i).getmID());
+                        mJsonObject.put("message",messageResponseArrayList.get(i).getmMessage());
+                        mJsonObject.put("time",messageResponseArrayList.get(i).getmMessage());
+                        mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getMmSenderUserName());
+                        mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
+                        jsonArray.put(mJsonObject);
+                    }
+                }else{
+                    for(int i=0;i<messageResponseArrayList.size();i++){
+                        JSONObject mJsonObject = new JSONObject();
+                        mJsonObject.put("id",messageResponseArrayList.get(i).getmID());
+                        mJsonObject.put("message",messageResponseArrayList.get(i).getmMessage());
+                        mJsonObject.put("time",messageResponseArrayList.get(i).getmMessage());
+                        mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getMmSenderUserName());
+                        mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
+                        jsonArray.put(mJsonObject);
+                    }
+                }
+
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
 
 }
 
