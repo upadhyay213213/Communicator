@@ -1,11 +1,16 @@
 package commonmodules;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by nupadhay on 9/20/2016.
@@ -18,6 +23,9 @@ public class CommonUtils {
         DateTimeDifferance dateTimeDifferance = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss");
+        if(TimeZone.getDefault().getID().contains("Asia/Calcutta")){
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
 
         try {
 
@@ -57,8 +65,9 @@ public class CommonUtils {
     }
 
     public static Calendar getCalendar(Date date) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.setTime(date);
+
         return cal;
     }
 
@@ -122,6 +131,14 @@ public class CommonUtils {
         }
 
         return "";
+    }
+
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 

@@ -22,20 +22,44 @@
 
         <ImageView
             android:id="@+id/assistanceID"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:background="@drawable/icon_assistance"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:layout_height="wrap_content" />
+            android:layout_marginTop="30dp"
+            android:layout_height="150dp" />
+
+        <TextView
+            android:id="@+id/textIDAssitance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#904128"
+            android:text="Assistance"
+            android:textSize="25sp"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/assistanceID"
+            />
 
         <ImageView
             android:id="@+id/messageID"
-            android:layout_below="@id/assistanceID"
-            android:layout_width="wrap_content"
+            android:layout_below="@id/textIDAssitance"
+            android:layout_width="150dp"
             android:background="@drawable/icon_message"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content" />
+            android:layout_height="150dp" />
+
+        <TextView
+            android:id="@+id/textIDMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#4C7E23"
+            android:text="Messages"
+            android:layout_marginTop="5dp"
+            android:textSize="25sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/messageID"
+            />
     </RelativeLayout>
 
     <Button
@@ -47,8 +71,8 @@
         android:layout_marginRight="10dp"
         android:textSize="20sp"
         android:text="Logout"
-        android:background="@color/white"
-        android:textColor="@color/black"
+        android:background="@color/light_blue"
+        android:textColor="@color/white"
         android:layout_marginBottom="10dp"
         />
 

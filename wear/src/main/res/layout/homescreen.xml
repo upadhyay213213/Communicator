@@ -14,42 +14,56 @@
 
     <RelativeLayout
         android:layout_below="@id/headerID"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="2dp"
         android:layout_width="fill_parent"
         android:background="@color/white"
         android:orientation="vertical"
+
         android:layout_height="fill_parent">
 
         <ImageView
             android:id="@+id/assistanceID"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:background="@drawable/icon_assistance"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:layout_height="wrap_content" />
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:id="@+id/textIDAssitance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#904128"
+            android:text="Assistance"
+            android:textSize="15sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/assistanceID"
+            />
 
         <ImageView
             android:id="@+id/messageID"
-            android:layout_below="@id/assistanceID"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
+            android:layout_alignParentRight="true"
             android:background="@drawable/icon_message"
-            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:id="@+id/textIDMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#4C7E23"
+            android:text="Messages"
+            android:layout_alignParentRight="true"
+            android:textSize="15sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
             android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content" />
+            android:layout_below="@id/messageID"
+            />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/logoutButtonID"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="10dp"
-        android:textSize="20sp"
-        android:text="Logout"
-        android:background="@color/white"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp"
-        />
 
 </RelativeLayout>

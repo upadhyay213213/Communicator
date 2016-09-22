@@ -23,7 +23,6 @@ public class HomeScreenWear extends BaseActivity implements
          View.OnClickListener, RequestResponseInterface {
 
     private ImageView mMessage, mAssistance;
-    private Button mLogoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +43,9 @@ public class HomeScreenWear extends BaseActivity implements
 
     private void initializeUI() {
         mMessage = (ImageView) findViewById(R.id.messageID);
-        mLogoutButton = (Button) findViewById(R.id.logoutButtonID);
         mAssistance = (ImageView) findViewById(R.id.assistanceID);
         mAssistance.setOnClickListener(this);
         mMessage.setOnClickListener(this);
-        mLogoutButton.setOnClickListener(this);
         RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
     }
 
@@ -88,13 +85,6 @@ public class HomeScreenWear extends BaseActivity implements
             case R.id.messageID:
                 startActivity(new Intent(HomeScreenWear.this, MessageScreenWear.class));
                 break;
-
-            case R.id.logoutButtonID:
-//                PrefrensUtils.setDeviceToken(HomeScreenWear.this,"");
-//                startActivity(new Intent(HomeScreenWear.this, LoginScreen.class));
-                this.finish();
-                break;
-
         }
     }
 

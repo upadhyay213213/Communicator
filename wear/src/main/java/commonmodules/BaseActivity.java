@@ -7,6 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import subcodevs.communicator.R;
 
 
 /**
@@ -14,20 +18,20 @@ import android.support.v4.app.FragmentActivity;
  */
 public class BaseActivity extends FragmentActivity {
 
-    private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mProgressDialog=new ProgressDialog(this);
+        setContentView(R.layout.base);
+        mProgressDialog= (ProgressBar) findViewById(R.id.timer_progress);
     }
 
     public void startProgress(){
-       mProgressDialog.setMessage("Sending Message Please Wait");
-        mProgressDialog.show();
+        mProgressDialog.setVisibility(View.VISIBLE);
     }
 
     public void stopProgress(){
-        mProgressDialog.dismiss();
+        mProgressDialog.setVisibility(View.GONE);
     }
 
     public void buildAlertMessageNoGps(final Activity ctx, final String message) {

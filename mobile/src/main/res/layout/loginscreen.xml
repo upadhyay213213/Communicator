@@ -36,7 +36,8 @@
             android:layout_marginRight="30dp"
             android:hint="Enter your username/email"
             android:paddingLeft="10dp"
-            android:layout_height="wrap_content" />
+            android:background="@drawable/rect_shape"
+            android:layout_height="38dp" />
 
 
         <TextView
@@ -56,7 +57,9 @@
             android:paddingLeft="10dp"
             android:layout_marginRight="30dp"
             android:hint="Enter your password"
-            android:layout_height="wrap_content" />
+            android:inputType="textPassword"
+            android:background="@drawable/rect_shape"
+            android:layout_height="38dp" />
 
     </LinearLayout>
 

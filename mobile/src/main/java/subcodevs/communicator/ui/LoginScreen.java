@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import appconstant.AppConstatnts;
 import apputils.PrefrensUtils;
 import commonmodules.BaseActivityWear;
+import commonmodules.CommonUtils;
 import model.UserDetails;
 import subcodevs.communicator.HomeScreen;
 import subcodevs.communicator.R;
@@ -59,7 +60,9 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         mLoginButton.setOnClickListener(this);
 
         if(!PrefrensUtils.getUserName(this).isEmpty() && !PrefrensUtils.getPassword(this).isEmpty()){
+
             mLogin.setText(PrefrensUtils.getUserName(this));
+            mLogin.setSelection(mLogin.getText().toString().length());
             mPassword.setText(PrefrensUtils.getPassword(this));
         }
     }
@@ -84,12 +87,15 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         switch (v.getId()){
 
             case R.id.loginButtonID:
-                if(validateLoginDetails(mLogin.getText().toString().trim(),mPassword.getText().toString().trim())){
-                    PrefrensUtils.setPassword(LoginScreen.this,mPassword.getText().toString().trim());
-                    startProgress();
-                    RequestManager.getInstance().LoginRequest(mLogin.getText().toString().trim(),mPassword.getText().toString().trim());
+                if (CommonUtils.isNetworkAvailable(LoginScreen.this)){
+                    if(validateLoginDetails(mLogin.getText().toString().trim(),mPassword.getText().toString().trim())){
+                        PrefrensUtils.setPassword(LoginScreen.this,mPassword.getText().toString().trim());
+                        startProgress();
+                        RequestManager.getInstance().LoginRequest(mLogin.getText().toString().trim(),mPassword.getText().toString().trim());
+                    }
+                }else{
+                    buildAlertMessageInterNet(LoginScreen.this,"Please check your internet connection.");
                 }
-
                 break;
 
         }
@@ -116,7 +122,7 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         PrefrensUtils.setDeviceToken(this, response.getmUsertoken());
         PrefrensUtils.setUserID(this, String.valueOf(response.getmID()));
         PrefrensUtils.setUserName(this, response.getmUserName());
-        if(!mMessageID.isEmpty()){
+        if(mMessageID!=null && !mMessageID.isEmpty()){
             Intent intent = new Intent(this, MessageDetail.class);
             intent.putExtra("message", mMessagePush);
             intent.putExtra("messageID", mMessageID);

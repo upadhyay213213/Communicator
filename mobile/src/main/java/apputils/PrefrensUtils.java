@@ -16,6 +16,8 @@ public class PrefrensUtils {
     private static String  KEY_USER_PUSH_TOKEN="user_push_token";
     private static String KEY_MD_DEVICE_TOKEN="md_token";
     private static String KEY_PASSWORD="password";
+    private static String KEY_LONG="key_long";
+    private static String KEY_LAT="key_lat";
 
 
     public static void setDeviceToken(Context context, String token) {
@@ -91,6 +93,32 @@ public class PrefrensUtils {
     public static String getPassword(Context context) {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         return sharedpreferences.getString(KEY_PASSWORD, "");
+    }
+
+
+    public static void setLat(Context context, String name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_LAT, name);
+        editor.apply();
+    }
+
+    public static String getLat(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getString(KEY_LAT, "");
+    }
+
+
+    public static void setLong(Context context, String name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_LONG, name);
+        editor.apply();
+    }
+
+    public static String getLong(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getString(KEY_LONG, "");
     }
 
 }

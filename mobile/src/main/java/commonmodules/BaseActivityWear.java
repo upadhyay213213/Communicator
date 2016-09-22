@@ -28,7 +28,8 @@ public class BaseActivityWear extends FragmentActivity {
     }
 
     public void startProgress(){
-       mProgressDialog.setMessage("Please Wait");
+        mProgressDialog.setMessage("Please Wait..");
+        mProgressDialog.setCancelable(false);
         mProgressDialog.show();
     }
 
@@ -62,6 +63,21 @@ public class BaseActivityWear extends FragmentActivity {
     public void buildAlertMessage(final Activity ctx, final String message) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Success")
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void buildAlertMessageInterNet(final Activity ctx, final String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Error")
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {

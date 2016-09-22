@@ -68,7 +68,9 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
             MessageResponse response = gson.fromJson(o.toString(), MessageResponse.class);
             mUserName.setText(response.getmSenderDisplayName());
             mMessage.setText(response.getmMessage());
-            mTime.setText("Just now");
+            mTime.setText(CommonUtils.getTimeDifferance(response.getmTime()));
+            DataBaseQuery.insertMessageToDB(response,MessageDetail.this);
+            DataBaseQuery.updateMessageStatus(response.getmID(), "true");
             stopProgress();
         }
 

@@ -69,15 +69,12 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     private String TAG="HomeScreen";
     private int count;
     private String COUNT_KEY="com.example.key.count";
-    private boolean isLocationCalled;
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
         RequestManager.mRequestManager.responseInterface = this;
-        mProgressDialog.setMessage("Please wait..");
         locationStatusCheck();
         if (checkPlayServices()) {
             requestPermission();
@@ -137,15 +134,10 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         mAssistance.setOnClickListener(this);
         mMessage.setOnClickListener(this);
         mLogoutButton.setOnClickListener(this);
-        if (PrefrensUtils.getPushToken(this).isEmpty()) {
-            registerPushNotificationServices();
-        }else if(PrefrensUtils.getMDDevideToken(HomeScreen.this).isEmpty()){
-            RequestManager.getInstance().pushNotificationRequest(PrefrensUtils.getDeviceToken(HomeScreen.this),PrefrensUtils.getPushToken(HomeScreen.this),"Android",PrefrensUtils.getUserName(HomeScreen.this),PrefrensUtils.getUserID(HomeScreen.this),"pushNotificationRequest");
-        }
+
         if(mGoogleApiClient.isConnected() && mLastLocation!=null){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
         }
-        isLocationCalled=false;
     }
 
 
@@ -161,6 +153,11 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     protected void onResume() {
         super.onResume();
         RequestManager.mRequestManager.responseInterface = this;
+        if (PrefrensUtils.getPushToken(this).isEmpty()) {
+            registerPushNotificationServices();
+        }else if(PrefrensUtils.getMDDevideToken(HomeScreen.this).isEmpty()){
+            RequestManager.getInstance().pushNotificationRequest(PrefrensUtils.getDeviceToken(HomeScreen.this),PrefrensUtils.getPushToken(HomeScreen.this),"Android",PrefrensUtils.getUserName(HomeScreen.this),PrefrensUtils.getUserID(HomeScreen.this),"pushNotificationRequest");
+        }
         checkPlayServices();
         // Resuming the periodic location updates
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
@@ -203,6 +200,10 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         if (mLastLocation != null) {
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
+
+            PrefrensUtils.setLat(HomeScreen.this,String.valueOf(latitude));
+            PrefrensUtils.setLong(HomeScreen.this,String.valueOf(longitude));
+
             System.out.println("LatLong" + latitude + " " + longitude);
         }
         return mLastLocation;
@@ -279,8 +280,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     @Override
     public void onConnected(Bundle arg0) {
         displayLocation();
-        if(mLastLocation!=null && !isLocationCalled){
-            isLocationCalled=true;
+        if(mLastLocation!=null){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
         }
         if (mRequestingLocationUpdates) {
@@ -292,8 +292,14 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
           //  JSONObject json = dbJson.getJSON();
             JSONObject mJosn =  new JSONObject();
             mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
-            mJosn.put("lat",mLastLocation.getLatitude());
-            mJosn.put("long",mLastLocation.getLongitude());
+            if(mLastLocation==null){
+                mJosn.put("lat",PrefrensUtils.getLat(this));
+                mJosn.put("long",PrefrensUtils.getLong(this));
+            }else{
+                mJosn.put("lat",mLastLocation.getLatitude());
+                mJosn.put("long",mLastLocation.getLongitude());
+            }
+
             mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
             new SendToDataLayerThread("/path", mJosn.toString()).start();
         } catch (JSONException e) {
@@ -347,13 +353,12 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         switch (v.getId()) {
             case R.id.assistanceID:
                 startLocationUpdates();
+                startProgress();
                 if (mLastLocation != null) {
-                    mProgressDialog.show();
                     RequestManager.getInstance().requestAssistance(PrefrensUtils.getDeviceToken(HomeScreen.this),PrefrensUtils.getUserID(HomeScreen.this),String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()),"requestAssistance");
                 } else {
                     startLocationUpdates();
-                    mProgressDialog.show();
-                    RequestManager.getInstance().requestAssistance(PrefrensUtils.getDeviceToken(HomeScreen.this),PrefrensUtils.getUserID(HomeScreen.this),String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()),"requestAssistance");
+                        RequestManager.getInstance().requestAssistance(PrefrensUtils.getDeviceToken(HomeScreen.this),PrefrensUtils.getUserID(HomeScreen.this),PrefrensUtils.getLat(this),PrefrensUtils.getLong(this),"requestAssistance");
                 }
                 break;
 
@@ -372,7 +377,6 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     @Override
     public void responseListener(Object o,String callType) {
-        stopProgress();
         System.out.println("ResponseHomeScreen" + o.toString());
         Gson gson = new Gson();
         if(callType.equalsIgnoreCase("pushNotificationRequest")){
@@ -386,7 +390,6 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
 
         } if(callType.equalsIgnoreCase("requestAssistance")){
-             mProgressDialog.dismiss();
             try {
                 JSONObject json = new JSONObject(o.toString());
                 String type =json.getString("type");
@@ -397,6 +400,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 e.printStackTrace();
             }
         }
+        stopProgress();
     }
 
     @Override
