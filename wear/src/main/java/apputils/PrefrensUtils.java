@@ -17,6 +17,7 @@ public class PrefrensUtils {
     private static String KEY_PASSWORD="password";
     private static String KEY_LAT="latkey";
     private static String KEY_LONG="longkey";
+    private static String KEY_MESSAGE_DETAIL="Key_Message_Detail";
 
 
     public static void setDeviceToken(Context context, String token) {
@@ -116,6 +117,18 @@ public class PrefrensUtils {
     public static String getLong(Context context) {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         return sharedpreferences.getString(KEY_LONG, "");
+    }
+
+    public static void setMessageDetail(Context context, String name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_MESSAGE_DETAIL, name);
+        editor.apply();
+    }
+
+    public static String getMessageDetail(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getString(KEY_MESSAGE_DETAIL, "");
     }
 
 

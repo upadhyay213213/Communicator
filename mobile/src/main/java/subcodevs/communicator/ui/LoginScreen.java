@@ -58,9 +58,9 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         mPassword= (EditText) findViewById(R.id.passwordD);
         mLoginButton = (Button) findViewById(R.id.loginButtonID);
         mLoginButton.setOnClickListener(this);
+        mPassword.setTypeface(mLogin.getTypeface());
 
         if(!PrefrensUtils.getUserName(this).isEmpty() && !PrefrensUtils.getPassword(this).isEmpty()){
-
             mLogin.setText(PrefrensUtils.getUserName(this));
             mLogin.setSelection(mLogin.getText().toString().length());
             mPassword.setText(PrefrensUtils.getPassword(this));

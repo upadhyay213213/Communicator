@@ -90,6 +90,23 @@ public class BaseActivityWear extends FragmentActivity {
         alert.show();
     }
 
+    public void buildAlertMessageNoWearOrPlayServices(final Activity ctx, final String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Error")
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        ctx.finish();
+                        dialog.cancel();
+                    }
+                });
+
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
 
     public void handleErrorCase(Activity ctx,int response){
         String message="Something went wrong. Please try again later.";

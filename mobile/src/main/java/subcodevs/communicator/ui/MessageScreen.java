@@ -3,16 +3,22 @@ package subcodevs.communicator.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -41,11 +47,13 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
     private MessageAdapter messageAdapter;
     private Handler handler;
     private GoogleApiClient mGoogleApiClient;
+    private boolean isWithoutWear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_screen);
+        isWithoutWear=false;
         initializeUI();
         DatabaseHelper.init(this);
         RequestManager.mRequestManager.responseInterface = this;
@@ -85,6 +93,9 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
     @Override
     protected void onStart() {
         super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
         if (messageAdapter != null) {
             ArrayList<MessageResposneDatabase> msg = DataBaseQuery.getMessageResponse();
             messageAdapter = new MessageAdapter(MessageScreen.this, msg);
@@ -117,6 +128,45 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
             handleErrorCase(this, error.networkResponse.statusCode);
         }catch (Exception e){
 
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+            if(isWithoutWear==true){
+                buildGoogleApiClientWithoutWear();
+
+            }
+            mGoogleApiClient.connect();
+        }
+
+        if(!isWithoutWear){
+            try{
+                new SendToDataLayerThread("/path", sendDataToWatch().toString()).start();
+            }catch (Exception e){
+
+            }
+        }
+
+
+    }
+
+    private void buildGoogleApiClientWithoutWear() {
+        isWithoutWear=true;
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
     }
 
@@ -154,7 +204,7 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
                         mJsonObject.put("id",messageResponseArrayList.get(i).getmID());
                         mJsonObject.put("message",messageResponseArrayList.get(i).getmMessage());
                         mJsonObject.put("time",messageResponseArrayList.get(i).getmMessage());
-                        mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getMmSenderUserName());
+                        mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getmSenderDisplayName());
                         mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
                         jsonArray.put(mJsonObject);
                     }
@@ -164,20 +214,40 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
                         mJsonObject.put("id",messageResponseArrayList.get(i).getmID());
                         mJsonObject.put("message",messageResponseArrayList.get(i).getmMessage());
                         mJsonObject.put("time",messageResponseArrayList.get(i).getmMessage());
-                        mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getMmSenderUserName());
+                        mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getmSenderDisplayName());
                         mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
                         jsonArray.put(mJsonObject);
                     }
                 }
-
-
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonArray;
+    }
+
+
+    class SendToDataLayerThread extends Thread {
+        String path;
+        String message;
+
+        SendToDataLayerThread(String p, String msg) {
+            path = p;
+            message = msg;
+        }
+
+        public void run() {
+            NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+            for (Node node : nodes.getNodes()) {
+                MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), path, message.getBytes()).await();
+                if (result.getStatus().isSuccess()) {
+                    Log.v("myTag", "Message: {" + message + "} sent to: " + node.getDisplayName());
+                }
+                else {
+                    Log.v("myTag", "ERROR: failed to send Message");
+                }
+            }
+        }
     }
 
 }

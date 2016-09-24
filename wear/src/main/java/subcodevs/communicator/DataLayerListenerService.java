@@ -40,9 +40,9 @@ public class DataLayerListenerService extends WearableListenerService {
 
                 }
             }else{
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor edit = pref.edit();
-            edit.putString("demo_json", message).apply();
+
+                PrefrensUtils.setMessageDetail(getApplicationContext(),message);
+
             }
 
 

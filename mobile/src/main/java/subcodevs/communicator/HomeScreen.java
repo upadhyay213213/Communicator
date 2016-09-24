@@ -69,12 +69,14 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     private String TAG="HomeScreen";
     private int count;
     private String COUNT_KEY="com.example.key.count";
+    private boolean isWithoutWear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
         RequestManager.mRequestManager.responseInterface = this;
+        isWithoutWear=false;
         locationStatusCheck();
         if (checkPlayServices()) {
             requestPermission();
@@ -159,6 +161,13 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             RequestManager.getInstance().pushNotificationRequest(PrefrensUtils.getDeviceToken(HomeScreen.this),PrefrensUtils.getPushToken(HomeScreen.this),"Android",PrefrensUtils.getUserName(HomeScreen.this),PrefrensUtils.getUserID(HomeScreen.this),"pushNotificationRequest");
         }
         checkPlayServices();
+        if (mGoogleApiClient != null && !mGoogleApiClient.isConnected()) {
+            if(isWithoutWear==true){
+                buildGoogleApiClientWithoutWear();
+            }
+
+            mGoogleApiClient.connect();
+        }
         // Resuming the periodic location updates
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
@@ -193,7 +202,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
      * Method to display the location on UI
      */
     private Location displayLocation() {
-        if (checkPermission()) {
+        if (checkPermission() && mGoogleApiClient.isConnected()) {
             mLastLocation = LocationServices.FusedLocationApi
                     .getLastLocation(mGoogleApiClient);
         }
@@ -226,8 +235,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 //                .addApi(LocationServices.API).build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
+                .addConnectionCallbacks(this).addApi(Wearable.API)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
     }
@@ -260,7 +268,10 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     protected void startLocationUpdates() {
 
-        if (checkPermission()) {
+        if(!mGoogleApiClient.isConnected() && mGoogleApiClient!=null){
+            mGoogleApiClient.connect();
+        }
+        if (checkPermission() && mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
         }
@@ -273,8 +284,20 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = "
-                + result.getErrorCode());
+        if (checkPlayServices()) {
+            requestPermission();
+            buildGoogleApiClientWithoutWear();
+            createLocationRequest();
+        }
+
+    }
+
+    private void buildGoogleApiClientWithoutWear() {
+        isWithoutWear=true;
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
     }
 
     @Override
@@ -286,25 +309,26 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
         }
+        if(!isWithoutWear){
+            try {
+                //  JSONObject json = dbJson.getJSON();
+                JSONObject mJosn =  new JSONObject();
+                mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
+                if(mLastLocation==null){
+                    mJosn.put("lat",PrefrensUtils.getLat(this));
+                    mJosn.put("long",PrefrensUtils.getLong(this));
+                }else{
+                    mJosn.put("lat",mLastLocation.getLatitude());
+                    mJosn.put("long",mLastLocation.getLongitude());
+                }
 
-      //  DatabaseToJSON dbJson = new DatabaseToJSON(HomeScreen.this);
-        try {
-          //  JSONObject json = dbJson.getJSON();
-            JSONObject mJosn =  new JSONObject();
-            mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
-            if(mLastLocation==null){
-                mJosn.put("lat",PrefrensUtils.getLat(this));
-                mJosn.put("long",PrefrensUtils.getLong(this));
-            }else{
-                mJosn.put("lat",mLastLocation.getLatitude());
-                mJosn.put("long",mLastLocation.getLongitude());
+                mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
+                new SendToDataLayerThread("/path", mJosn.toString()).start();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-            mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
-            new SendToDataLayerThread("/path", mJosn.toString()).start();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
     }
 
     @Override
