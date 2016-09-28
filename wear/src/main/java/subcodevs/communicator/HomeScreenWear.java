@@ -2,6 +2,7 @@ package subcodevs.communicator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,15 +31,24 @@ public class HomeScreenWear extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
+
+        //making  android  view shape aware
+        WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            @Override
+            public void onLayoutInflated(WatchViewStub stub) {
+                // Now you can access your views
+                initializeUI(stub);
+            }
+        });
         Intent mIntent = new Intent(this, DataLayerListenerService.class);
         startService(mIntent);
         RequestManager.mRequestManager.responseInterface = this;
-        initializeUI();
 
     }
 
 
-    public void startProgress(){
+    public void startProgress() {
         mProgressDialog.setVisibility(View.VISIBLE);
     }
 
@@ -50,19 +60,18 @@ public class HomeScreenWear extends BaseActivity implements
 
 
 
-    private void initializeUI() {
-        mProgressDialog= (ProgressBar) findViewById(R.id.timer_progress);
-        mMessage = (ImageView) findViewById(R.id.messageID);
-        mAssistance = (ImageView) findViewById(R.id.assistanceID);
+    private void initializeUI(WatchViewStub stub) {
+        mProgressDialog= (ProgressBar) stub.findViewById(R.id.timer_progress);
+        mMessage = (ImageView) stub.findViewById(R.id.messageID);
+        mAssistance = (ImageView) stub.findViewById(R.id.assistanceID);
         mAssistance.setOnClickListener(this);
         mMessage.setOnClickListener(this);
-        if(PrefrensUtils.getDeviceToken(this).isEmpty()){
-            showChangeLangDialog(this,"Something went wrong. Please make sure that your Apple Watch is paired properly with your iPhone.","Error");
+        if(!PrefrensUtils.getDeviceToken(this).isEmpty()){
+            RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
+        }else{
+            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Phone.","Error");
         }
-        if(PrefrensUtils.getLat(this).isEmpty()){
-            showChangeLangDialog(this,"Seems like location services are not enabled for this app in your iPhone. Please enable the same and try again.","Error");
-        }
-        RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
+
     }
 
 
@@ -116,7 +125,7 @@ public class HomeScreenWear extends BaseActivity implements
                 JSONObject json = new JSONObject(o.toString());
                 String type =json.getString("type");
                 if(type.equals("assistance")){
-                    showChangeLangDialog(this,"Concerned people have been informed.They will contact you soon.","Success");
+                    showChangeLangDialog(this,"Concerned people have been informed. They will contact you soon.","Success!");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

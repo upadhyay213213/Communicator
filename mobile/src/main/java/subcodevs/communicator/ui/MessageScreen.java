@@ -203,7 +203,7 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
                         JSONObject mJsonObject = new JSONObject();
                         mJsonObject.put("id",messageResponseArrayList.get(i).getmID());
                         mJsonObject.put("message",messageResponseArrayList.get(i).getmMessage());
-                        mJsonObject.put("time",messageResponseArrayList.get(i).getmMessage());
+                        mJsonObject.put("time",messageResponseArrayList.get(i).getmTime());
                         mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getmSenderDisplayName());
                         mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
                         jsonArray.put(mJsonObject);
@@ -213,7 +213,7 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
                         JSONObject mJsonObject = new JSONObject();
                         mJsonObject.put("id",messageResponseArrayList.get(i).getmID());
                         mJsonObject.put("message",messageResponseArrayList.get(i).getmMessage());
-                        mJsonObject.put("time",messageResponseArrayList.get(i).getmMessage());
+                        mJsonObject.put("time",messageResponseArrayList.get(i).getmTime());
                         mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getmSenderDisplayName());
                         mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
                         jsonArray.put(mJsonObject);

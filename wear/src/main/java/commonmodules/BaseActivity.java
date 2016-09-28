@@ -44,9 +44,9 @@ public class BaseActivity extends FragmentActivity {
         final View dialogView = inflater.inflate(R.layout.custom_alert, null);
         dialogBuilder.setView(dialogView);
         final AlertDialog b = dialogBuilder.create();
-        final TextView edt = (TextView) dialogView.findViewById(R.id.txt_dia);
-        final TextView errorMsg = (TextView) dialogView.findViewById(R.id.txt_dia_error);
-        final Button btn = (Button) dialogView.findViewById(R.id.btn_no);
+        final TextView edt = (TextView) dialogView.findViewById(R.id.messageComID);
+        final TextView errorMsg = (TextView) dialogView.findViewById(R.id.alertTitle);
+        final Button btn = (Button) dialogView.findViewById(R.id.button1);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,10 +79,10 @@ public class BaseActivity extends FragmentActivity {
         String message="Something went wrong. Please try again later.";
         switch (response){
             case 404:
-            message="Please login through iPhone before proceeding further.";
+            message="Please login through Phone before proceeding further.";
                 break;
             case 401:
-                message = "Please login through iPhone before proceeding further.";
+                message = "Please login through Phone before proceeding further.";
                 break;
             case 400:
                 message ="Bad Request";
@@ -103,9 +103,9 @@ break;
         final View dialogView = inflater.inflate(R.layout.custom_alert, null);
         dialogBuilder.setView(dialogView);
         final AlertDialog b = dialogBuilder.create();
-        final TextView edt = (TextView) dialogView.findViewById(R.id.txt_dia);
-        final TextView errorMsg = (TextView) dialogView.findViewById(R.id.txt_dia_error);
-        final Button btn = (Button) dialogView.findViewById(R.id.btn_no);
+        final TextView edt = (TextView) dialogView.findViewById(R.id.messageComID);
+        final TextView errorMsg = (TextView) dialogView.findViewById(R.id.alertTitle);
+        final Button btn = (Button) dialogView.findViewById(R.id.button1);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

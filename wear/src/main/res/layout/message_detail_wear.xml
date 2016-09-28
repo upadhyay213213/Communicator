@@ -5,6 +5,6 @@
     android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:rectLayout="@layout/homescreen_rect"
-    app:roundLayout="@layout/homescreen_round">
+    app:rectLayout="@layout/message_detail_rect"
+    app:roundLayout="@layout/message_detail_round">
 </android.support.wearable.view.WatchViewStub>

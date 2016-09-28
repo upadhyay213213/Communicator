@@ -1,50 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#cccccc"
-    android:orientation="vertical" >
+<android.support.wearable.view.ObservableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentPanel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    >
 
     <LinearLayout
+        android:id="@+id/animatedWrapperContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    <TextView
-        android:id="@+id/txt_dia_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:text="jgfgyufyyyfyfyfiyfffiyfiyfiyfyiyfififiyfifiyy"
-        android:textColor="@android:color/white"
-        android:textSize="10dp"
-        android:textStyle="bold"/>
+        android:clipChildren="false"
+        >
 
-    <TextView
-        android:id="@+id/txt_dia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:text="jgfgyufyyyfyfyfiyfffiyfiyfiyfyiyfififiyfifiyy"
-        android:textColor="@android:color/white"
-        android:textSize="10dp"
-        android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/alertTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/diag_content_top_padding"
+            android:paddingLeft="@dimen/diag_content_side_padding"
+            android:paddingRight="@dimen/diag_content_side_padding"
+            style="@style/Widget.WearDiag.TextView.Title"
+            android:textColor="@color/dark_red"
+            />
 
+        <TextView
+            android:id="@+id/messageComID"
+            android:layout_width="match_parent"
+            android:text="ajhdsjdjakdjkasdsskaj"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/diag_content_bottom_padding"
+            android:paddingLeft="@dimen/diag_content_side_padding"
+            android:paddingRight="@dimen/diag_content_side_padding"
+            style="@style/Widget.WearDiag.TextView.Message"
+            android:textColor="@color/dark_grey"
+            />
 
+        <LinearLayout
+            android:id="@+id/buttonPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dialog_shade_background"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/diag_content_side_padding"
+            android:paddingRight="@dimen/diag_content_side_padding"
+            android:paddingBottom="@dimen/diag_button_bottom_padding"
+            >
+
+            <Button
+                android:id="@+id/button1"
+                android:background="@color/dark_red"
+                android:textColor="@color/white"
+                android:text="OK"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_height="40dp"
+                style="@style/Widget.WearDiag.Button"/>
+
+            <Button
+                android:id="@+id/button3"
+                android:visibility="invisible"
+                style="@style/Widget.WearDiag.Button"/>
+
+            <Button
+                android:id="@+id/button2"
+                android:visibility="invisible"
+                style="@style/Widget.WearDiag.Button"/>
+        </LinearLayout>
     </LinearLayout>
-    <Button
-        android:id="@+id/btn_no"
-        android:layout_width="50dp"
-        android:layout_height="20dp"
-        android:background="@android:color/black"
-        android:clickable="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-
-        android:layout_marginBottom="20dp"
-        android:text="OK"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
-
-</RelativeLayout>
+</android.support.wearable.view.ObservableScrollView>
+    <!-- From: file:/tmp/tmp-deduplicated574725355717134199/third_party/java_src/android_libs/android_wear/wearable_support/java/android/support/wearable/res/layout/alert_dialog_wearable.xml -->

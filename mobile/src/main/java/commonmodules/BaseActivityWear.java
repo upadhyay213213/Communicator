@@ -62,7 +62,7 @@ public class BaseActivityWear extends FragmentActivity {
 
     public void buildAlertMessage(final Activity ctx, final String message) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Success")
+        builder.setTitle("Success!")
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {

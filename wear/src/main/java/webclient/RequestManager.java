@@ -130,7 +130,7 @@ public class RequestManager {
             String url = AppConstatnts.UPDATE_PUSH_TOKEN + token;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("device_token", deviceToken);
-            jsonObject.put("device_type", deviceType);
+            jsonObject.put("device_type", "android");
             jsonObject.put("information", username);
             jsonObject.put("user_id", userid);
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
@@ -163,6 +163,34 @@ public class RequestManager {
         try {
             /**URL */
             String url = AppConstatnts.GET_MESSAGE + id +"/messages"+ "?" + "token=" + token;
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                    url, null,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            responseInterface.responseListener(response,callType);
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    responseInterface.errorListener(error);
+                }
+            }) {
+            };
+            AppController.getInstance().getRequestQueue().add(jsonObjReq);
+
+        } catch (Exception e) {
+            System.out.println("requestexecption" + e.getMessage());
+        }
+    }
+
+
+    public void RequestMessageDetail(String id, String token,String messageID, final String callType) {
+        try {
+            /**URL */
+            String url = AppConstatnts.GET_MESSAGE_DETAIL + id +"/message/" +messageID+ "?" + "token=" + token;
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                     url, null,
                     new Response.Listener<JSONObject>() {

@@ -5,6 +5,7 @@ package appconstant;
  */
 public class AppConstatnts {
 
+
     public static String LOGIN_URL="http://aptoseniorcare.com/wp-json/v1/account/login";
 
     public static  String LOCATION_UPDATE="http://aptoseniorcare.com/wp-json/v1/user/location/";
@@ -14,5 +15,9 @@ public class AppConstatnts {
     public static String UPDATE_PUSH_TOKEN="http://aptoseniorcare.com/wp-json/v1/push-service?token=";
 
     public static String GET_MESSAGE="http://aptoseniorcare.com/wp-json/v1/push-service/";
+
+    public static String GET_MESSAGE_DETAIL="http://aptoseniorcare.com/wp-json/v1/push-service/";
+
+
 
 }

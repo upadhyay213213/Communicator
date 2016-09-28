@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import databasequery.DataBaseQuery;
+import commonmodules.CommonUtils;
 import model.MessageResposneDatabase;
 import subcodevs.communicator.R;
-import subcodevs.communicator.ui.MessageDetailWear;
+import subcodevs.communicator.ui.MessageDetail;
 
 /**
  * Created by nupadhay on 9/19/2016.
@@ -54,6 +54,7 @@ public class MessageAdapter extends BaseAdapter {
         MessageViewHolder mHolder;
         if(convertView==null){
             mHolder = new MessageViewHolder();
+
             convertView = mInflater.inflate(R.layout.message_adapter,null);
             mHolder.mUserName = (TextView) convertView.findViewById(R.id.usernameID);
             mHolder.mTime= (TextView) convertView.findViewById(R.id.timeID);
@@ -66,20 +67,13 @@ public class MessageAdapter extends BaseAdapter {
 
         mHolder.mUserName.setText(mMessageResponse.get(position).getmSenderDisplayName());
         mHolder.mMessage.setText(mMessageResponse.get(position).getmMessage());
-
-        if(mMessageResponse.get(position).isMessageRead()){
-            mHolder.mLinearID.setBackgroundColor(mCtx.getResources().getColor(R.color.white));
-        }else{
-
-            mHolder.mLinearID.setBackgroundColor(mCtx.getResources().getColor(R.color.blue));
-        }
+        mHolder.mTime.setText(CommonUtils.getTimeDifferance(mMessageResponse.get(position).getmTime()));
 
         mHolder.mLinearID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Update the database with true and false about read message
-                DataBaseQuery.updateMessageStatus(mMessageResponse.get(position).getmID(), "true");
-                Intent intent = new Intent(mCtx, MessageDetailWear.class);
+                Intent intent = new Intent(mCtx, MessageDetail.class);
                 intent.putExtra("clickposition", String.valueOf(position));
                 mCtx.startActivity(intent);
             }

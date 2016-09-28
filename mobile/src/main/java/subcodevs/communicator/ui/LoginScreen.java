@@ -30,6 +30,7 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     private Button mLoginButton;
     private String mMessagePush;
     private String mMessageID;
+    private boolean isFromMmessageDetail=false;
 
 
     @Override
@@ -49,6 +50,10 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         if (getIntent().getStringExtra("messageID") != null) {
             mMessagePush = getIntent().getStringExtra("message");
             mMessageID = getIntent().getStringExtra("messageID");
+        }
+
+        if(getIntent().getStringExtra("FROMMESSAGEDETAIL") != null){
+            isFromMmessageDetail=true;
         }
 
     }
@@ -122,22 +127,33 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         PrefrensUtils.setDeviceToken(this, response.getmUsertoken());
         PrefrensUtils.setUserID(this, String.valueOf(response.getmID()));
         PrefrensUtils.setUserName(this, response.getmUserName());
-        if(mMessageID!=null && !mMessageID.isEmpty()){
+        if(isFromMmessageDetail){
             Intent intent = new Intent(this, MessageDetail.class);
             intent.putExtra("message", mMessagePush);
             intent.putExtra("messageID", mMessageID);
             startActivity(intent);
-        }else {
-            startActivity(new Intent(this, HomeScreen.class));
+        }else{
+            if(mMessageID!=null && !mMessageID.isEmpty()){
+                Intent intent = new Intent(this, MessageDetail.class);
+                intent.putExtra("message", mMessagePush);
+                intent.putExtra("messageID", mMessageID);
+                startActivity(intent);
+            }else {
+                startActivity(new Intent(this, HomeScreen.class));
+            }
         }
-
         this.finish();
     }
 
     @Override
     public void errorListener(VolleyError error) {
         stopProgress();
-        handleErrorCase(this,error.networkResponse.statusCode);
+        stopProgress();
+        try{
+            handleErrorCase(this, error.networkResponse.statusCode);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

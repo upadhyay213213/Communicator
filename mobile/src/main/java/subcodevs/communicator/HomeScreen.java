@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -65,7 +66,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     private static int DISPLACEMENT = 10; // 10 meters
     private static final int PERMISSION_REQUEST_CODE = 1;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private Button mLogoutButton;
+    private TextView mLogoutButton;
     private String TAG="HomeScreen";
     private int count;
     private String COUNT_KEY="com.example.key.count";
@@ -131,7 +132,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     private void initializeUI() {
         mMessage = (ImageView) findViewById(R.id.messageID);
-        mLogoutButton = (Button) findViewById(R.id.logoutButtonID);
+        mLogoutButton = (TextView) findViewById(R.id.logoutButtonID);
         mAssistance = (ImageView) findViewById(R.id.assistanceID);
         mAssistance.setOnClickListener(this);
         mMessage.setOnClickListener(this);
@@ -418,7 +419,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 JSONObject json = new JSONObject(o.toString());
                 String type =json.getString("type");
                 if(type.equalsIgnoreCase("assistance")){
-                    buildAlertMessage(this,"Concerned people have been informed.They will contact you soon.");
+                    buildAlertMessage(this,"Concerned people have been informed. They will contact you soon.");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -37,22 +37,37 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.message_detail);
-        RequestManager.getInstance().responseInterface = this;
-        DatabaseHelper.init(this);
-        initializeUI();
-        if (getIntent().getStringExtra("messageID") != null) {
-            startProgress();
-            mMessagePush = getIntent().getStringExtra("message");
-            mMessageID = getIntent().getStringExtra("messageID");
-            RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(this),PrefrensUtils.getDeviceToken(this),mMessageID,"MessageDetail");
-        } else {
-            position = getIntent().getStringExtra("clickposition");
-            ArrayList<MessageResposneDatabase> messageResposneDatabases = DataBaseQuery.getMessageResponse();
-            mUserName.setText(messageResposneDatabases.get(Integer.parseInt(position)).getmSenderDisplayName());
-            mMessage.setText(messageResposneDatabases.get(Integer.parseInt(position)).getmMessage());
-            mTime.setText(CommonUtils.getTimeDifferance(messageResposneDatabases.get(Integer.parseInt(position)).getmTime()));
+        if(PrefrensUtils.getDeviceToken(this).isEmpty()){
+            if (getIntent().getStringExtra("messageID") != null) {
+                startProgress();
+                mMessagePush = getIntent().getStringExtra("message");
+                mMessageID = getIntent().getStringExtra("messageID");
+            }
+            Intent intent =new Intent(this,LoginScreen.class);
+            intent.putExtra("FROMMESSAGEDETAIL","true");
+            intent.putExtra("message", mMessagePush);
+            intent.putExtra("messageID",mMessageID);
+            startActivity(intent);
+            this.finish();
+        }else{
+            setContentView(R.layout.message_detail);
+            RequestManager.getInstance().responseInterface = this;
+            DatabaseHelper.init(this);
+            initializeUI();
+            if (getIntent().getStringExtra("messageID") != null) {
+                startProgress();
+                mMessagePush = getIntent().getStringExtra("message");
+                mMessageID = getIntent().getStringExtra("messageID");
+                RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(this), PrefrensUtils.getDeviceToken(this), mMessageID, "MessageDetail");
+            } else {
+                position = getIntent().getStringExtra("clickposition");
+                ArrayList<MessageResposneDatabase> messageResposneDatabases = DataBaseQuery.getMessageResponse();
+                mUserName.setText(messageResposneDatabases.get(Integer.parseInt(position)).getmSenderDisplayName());
+                mMessage.setText(messageResposneDatabases.get(Integer.parseInt(position)).getmMessage());
+                mTime.setText(CommonUtils.getTimeDifferance(messageResposneDatabases.get(Integer.parseInt(position)).getmTime()));
+            }
         }
+
     }
 
     private void initializeUI() {
