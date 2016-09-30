@@ -61,7 +61,6 @@ public class MessageDetail extends BaseActivity implements RequestResponseInterf
                 });
                 if (getIntent().getStringExtra("messageID") != null) {
                     startProgress();
-                    mMessagePush = getIntent().getStringExtra("message");
                     mMessageID = getIntent().getStringExtra("messageID");
                     RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(MessageDetail.this),PrefrensUtils.getDeviceToken(MessageDetail.this),mMessageID,"MessageDetail");
                 } else {

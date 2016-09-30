@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -71,6 +72,8 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     private int count;
     private String COUNT_KEY="com.example.key.count";
     private boolean isWithoutWear;
+    private TextView textIDAssitance;
+    private TextView textIDMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         isWithoutWear=false;
         locationStatusCheck();
         if (checkPlayServices()) {
-            requestPermission();
+       //     requestPermission();
             buildGoogleApiClient();
             createLocationRequest();
         }
@@ -131,12 +134,32 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
 
     private void initializeUI() {
+        textIDAssitance = (TextView) findViewById(R.id.textIDAssitance);
+        textIDMessage = (TextView) findViewById(R.id.textIDMessage);
         mMessage = (ImageView) findViewById(R.id.messageID);
         mLogoutButton = (TextView) findViewById(R.id.logoutButtonID);
         mAssistance = (ImageView) findViewById(R.id.assistanceID);
+        Display mDisplay = getWindowManager().getDefaultDisplay();
+        final int width  = mDisplay.getWidth();
+        final int height = mDisplay.getHeight();
+        
+        if(width<=500){
+            try {
+                mMessage.getLayoutParams().height = 180;
+                mAssistance.getLayoutParams().height=180;
+                mMessage.getLayoutParams().width=180;
+                mAssistance.getLayoutParams().width=180;
+                textIDMessage.setTextSize(20);
+                textIDAssitance.setTextSize(20);
+            }catch (Exception e){
+
+            }
+        }
+
         mAssistance.setOnClickListener(this);
         mMessage.setOnClickListener(this);
         mLogoutButton.setOnClickListener(this);
+
 
         if(mGoogleApiClient.isConnected() && mLastLocation!=null){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
@@ -203,7 +226,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
      * Method to display the location on UI
      */
     private Location displayLocation() {
-        if (checkPermission() && mGoogleApiClient.isConnected()) {
+        if (/*checkPermission() &&*/ mGoogleApiClient.isConnected()) {
             mLastLocation = LocationServices.FusedLocationApi
                     .getLastLocation(mGoogleApiClient);
         }
@@ -272,7 +295,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         if(!mGoogleApiClient.isConnected() && mGoogleApiClient!=null){
             mGoogleApiClient.connect();
         }
-        if (checkPermission() && mGoogleApiClient.isConnected()) {
+        if (/*checkPermission() && */mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
         }
@@ -286,7 +309,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         if (checkPlayServices()) {
-            requestPermission();
+         //   requestPermission();
             buildGoogleApiClientWithoutWear();
             createLocationRequest();
         }

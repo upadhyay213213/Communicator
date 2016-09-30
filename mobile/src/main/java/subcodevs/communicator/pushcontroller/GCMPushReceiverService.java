@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import apputils.PrefrensUtils;
 import subcodevs.communicator.R;
 import subcodevs.communicator.ui.MessageDetail;
 
@@ -31,34 +32,32 @@ public class GCMPushReceiverService extends GcmListenerService {
 
 
         //Displaying a notiffication with the message
-        sendNotification(message, messageID);
+        try{
+            sendNotification(message, messageID);
+        }catch (Exception e){
+
+        }
+
     }
 
     //This method is generating a notification and displaying the notification
     private void sendNotification(String message, String mesID) {
         Intent intent;
         intent = new Intent(this, MessageDetail.class);
-        intent.putExtra("message", message);
-        intent.putExtra("messageID", mesID);
+        intent.putExtra("messageID",mesID);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PrefrensUtils.setPushID(this, mesID);
 
         int requestCode = 0;
         PendingIntent viewPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         NotificationCompat.Builder noBuilder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            noBuilder = new NotificationCompat.Builder(this).setColor(getColor(R.color.assi))
+        noBuilder = new NotificationCompat.Builder(this).setColor(this.getResources().getColor(R.color.assi))
                     .setSmallIcon(R.drawable.imageedit).setContentTitle("Communicator")
                     .setContentText(message)
                     .setAutoCancel(true)
                     .setContentIntent(viewPendingIntent);
-        } else {
-            noBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.app_icon).setContentTitle("Communicator")
-                    .setContentText(message)
-                    .setAutoCancel(true)
-                    .setContentIntent(viewPendingIntent);
-        }
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplication());
         notificationManager.notify(0, noBuilder.build());

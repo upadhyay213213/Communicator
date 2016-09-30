@@ -45,7 +45,7 @@ public class BaseActivityWear extends FragmentActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
 
-                        if(message.equalsIgnoreCase("Your Session is expired.Please login again.")){
+                        if(message.equalsIgnoreCase("Your session is expired. Please login again.")){
                             startActivity(new Intent(ctx, LoginScreen.class));
                             PrefrensUtils.setDeviceToken(ctx,"");
                             ctx.finish();
@@ -115,7 +115,7 @@ public class BaseActivityWear extends FragmentActivity {
             message="User not found.";
                 break;
             case 401:
-                message = "Your Session is expired.Please login again.";
+                message = "Your session is expired. Please login again.";
                 break;
             case 400:
                 message ="Bad Request.";

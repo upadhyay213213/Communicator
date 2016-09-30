@@ -18,6 +18,7 @@ public class PrefrensUtils {
     private static String KEY_PASSWORD="password";
     private static String KEY_LONG="key_long";
     private static String KEY_LAT="key_lat";
+    private static String KEY_PUSHID="key_pushID";
 
 
     public static void setDeviceToken(Context context, String token) {
@@ -120,5 +121,18 @@ public class PrefrensUtils {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         return sharedpreferences.getString(KEY_LONG, "");
     }
+
+    public static void setPushID(Context context, String name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_PUSHID, name);
+        editor.apply();
+    }
+
+    public static String getPushID(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getString(KEY_PUSHID, "");
+    }
+
 
 }

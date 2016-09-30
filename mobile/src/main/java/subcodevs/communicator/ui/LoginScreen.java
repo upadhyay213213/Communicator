@@ -9,9 +9,6 @@ import android.widget.EditText;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 
-import org.json.JSONObject;
-
-import appconstant.AppConstatnts;
 import apputils.PrefrensUtils;
 import commonmodules.BaseActivityWear;
 import commonmodules.CommonUtils;
@@ -30,7 +27,7 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     private Button mLoginButton;
     private String mMessagePush;
     private String mMessageID;
-    private boolean isFromMmessageDetail=false;
+    private boolean isFromMmessageDetail = false;
 
 
     @Override
@@ -38,50 +35,46 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         super.onCreate(savedInstanceState);
 
 
-        if(PrefrensUtils.getDeviceToken(this).isEmpty()){
+        if (PrefrensUtils.getDeviceToken(this).isEmpty()) {
             setContentView(R.layout.loginscreen);
             initializeUI();
             RequestManager.mRequestManager.responseInterface = this;
-        }else{
+        } else {
             setContentView(R.layout.homescreen);
             startActivity(new Intent(this, HomeScreen.class));
         }
 
-        if (getIntent().getStringExtra("messageID") != null) {
-            mMessagePush = getIntent().getStringExtra("message");
-            mMessageID = getIntent().getStringExtra("messageID");
+        if (getIntent().getStringExtra("MessageIDLogin") != null) {
+            mMessageID = getIntent().getStringExtra("MessageIDLogin");
         }
 
-        if(getIntent().getStringExtra("FROMMESSAGEDETAIL") != null){
-            isFromMmessageDetail=true;
-        }
 
     }
 
-    private void initializeUI(){
+    private void initializeUI() {
         mLogin = (EditText) findViewById(R.id.loginID);
-        mPassword= (EditText) findViewById(R.id.passwordD);
+        mPassword = (EditText) findViewById(R.id.passwordD);
         mLoginButton = (Button) findViewById(R.id.loginButtonID);
         mLoginButton.setOnClickListener(this);
         mPassword.setTypeface(mLogin.getTypeface());
 
-        if(!PrefrensUtils.getUserName(this).isEmpty() && !PrefrensUtils.getPassword(this).isEmpty()){
+        if (!PrefrensUtils.getUserName(this).isEmpty() && !PrefrensUtils.getPassword(this).isEmpty()) {
             mLogin.setText(PrefrensUtils.getUserName(this));
             mLogin.setSelection(mLogin.getText().toString().length());
             mPassword.setText(PrefrensUtils.getPassword(this));
         }
     }
 
-    private boolean validateLoginDetails(String username,String password){
+    private boolean validateLoginDetails(String username, String password) {
         boolean isUserSuccess;
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
             mLogin.setError("Please enter your username/email");
-            isUserSuccess=false;
-        }else if(password.isEmpty()){
+            isUserSuccess = false;
+        } else if (password.isEmpty()) {
             mPassword.setError("Please enter your password");
-            isUserSuccess=false;
-        }else{
-            isUserSuccess=true;
+            isUserSuccess = false;
+        } else {
+            isUserSuccess = true;
         }
         return isUserSuccess;
     }
@@ -89,17 +82,17 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.loginButtonID:
-                if (CommonUtils.isNetworkAvailable(LoginScreen.this)){
-                    if(validateLoginDetails(mLogin.getText().toString().trim(),mPassword.getText().toString().trim())){
-                        PrefrensUtils.setPassword(LoginScreen.this,mPassword.getText().toString().trim());
+                if (CommonUtils.isNetworkAvailable(LoginScreen.this)) {
+                    if (validateLoginDetails(mLogin.getText().toString().trim(), mPassword.getText().toString().trim())) {
+                        PrefrensUtils.setPassword(LoginScreen.this, mPassword.getText().toString().trim());
                         startProgress();
-                        RequestManager.getInstance().LoginRequest(mLogin.getText().toString().trim(),mPassword.getText().toString().trim());
+                        RequestManager.getInstance().LoginRequest(mLogin.getText().toString().trim(), mPassword.getText().toString().trim());
                     }
-                }else{
-                    buildAlertMessageInterNet(LoginScreen.this,"Please check your internet connection.");
+                } else {
+                    buildAlertMessageInterNet(LoginScreen.this, "Please check your internet connection.");
                 }
                 break;
 
@@ -107,15 +100,15 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     }
 
     @Override
-    public void responseListener(Object o,String calltype) {
+    public void responseListener(Object o, String calltype) {
         stopProgress();
-        if(o.toString().contains("error")){
+        if (o.toString().contains("error")) {
 
-        }else{
-            if(calltype.equals("Login")){
+        } else {
+            if (calltype.equals("Login")) {
                 Gson gson = new Gson();
                 UserDetails response = gson.fromJson(o.toString(), UserDetails.class);
-                if(response!=null){
+                if (response != null) {
                     addLoginData(response);
                 }
             }
@@ -123,24 +116,15 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     }
 
 
-    private void addLoginData(UserDetails response){
+    private void addLoginData(UserDetails response) {
         PrefrensUtils.setDeviceToken(this, response.getmUsertoken());
         PrefrensUtils.setUserID(this, String.valueOf(response.getmID()));
         PrefrensUtils.setUserName(this, response.getmUserName());
-        if(isFromMmessageDetail){
+        if (mMessageID != null && !mMessageID.isEmpty()) {
             Intent intent = new Intent(this, MessageDetail.class);
-            intent.putExtra("message", mMessagePush);
-            intent.putExtra("messageID", mMessageID);
             startActivity(intent);
-        }else{
-            if(mMessageID!=null && !mMessageID.isEmpty()){
-                Intent intent = new Intent(this, MessageDetail.class);
-                intent.putExtra("message", mMessagePush);
-                intent.putExtra("messageID", mMessageID);
-                startActivity(intent);
-            }else {
-                startActivity(new Intent(this, HomeScreen.class));
-            }
+        } else {
+            startActivity(new Intent(this, HomeScreen.class));
         }
         this.finish();
     }
@@ -149,9 +133,9 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     public void errorListener(VolleyError error) {
         stopProgress();
         stopProgress();
-        try{
+        try {
             handleErrorCase(this, error.networkResponse.statusCode);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

@@ -37,16 +37,12 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         if(PrefrensUtils.getDeviceToken(this).isEmpty()){
-            if (getIntent().getStringExtra("messageID") != null) {
-                startProgress();
-                mMessagePush = getIntent().getStringExtra("message");
-                mMessageID = getIntent().getStringExtra("messageID");
-            }
             Intent intent =new Intent(this,LoginScreen.class);
-            intent.putExtra("FROMMESSAGEDETAIL","true");
-            intent.putExtra("message", mMessagePush);
-            intent.putExtra("messageID",mMessageID);
+            intent.putExtra("MessageIDLogin","true");
             startActivity(intent);
             this.finish();
         }else{
@@ -54,12 +50,12 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
             RequestManager.getInstance().responseInterface = this;
             DatabaseHelper.init(this);
             initializeUI();
-            if (getIntent().getStringExtra("messageID") != null) {
+            if (!PrefrensUtils.getPushID(this).isEmpty()) {
                 startProgress();
-                mMessagePush = getIntent().getStringExtra("message");
-                mMessageID = getIntent().getStringExtra("messageID");
-                RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(this), PrefrensUtils.getDeviceToken(this), mMessageID, "MessageDetail");
-            } else {
+                RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getPushID(this), "MessageDetail");
+            }
+            else {
+                PrefrensUtils.setPushID(this,"");
                 position = getIntent().getStringExtra("clickposition");
                 ArrayList<MessageResposneDatabase> messageResposneDatabases = DataBaseQuery.getMessageResponse();
                 mUserName.setText(messageResposneDatabases.get(Integer.parseInt(position)).getmSenderDisplayName());
@@ -104,7 +100,8 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(mMessageID!=null && !mMessageID.isEmpty()){
+        if(!PrefrensUtils.getPushID(this).isEmpty()){
+            PrefrensUtils.setPushID(this,"");
             this.finish();
             startActivity(new Intent(MessageDetail.this, HomeScreen.class));
 
