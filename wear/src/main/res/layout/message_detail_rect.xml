@@ -1,65 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.wearable.view.BoxInsetLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/light_grey"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-    <include
-        android:id="@+id/headerID"
-        layout="@layout/header_rect"
-        >
-    </include>
-    <LinearLayout
-        android:layout_below="@id/headerID"
-        android:orientation="vertical"
-        android:background="@color/white"
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <LinearLayout
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-        </LinearLayout>
+        <include
+            android:id="@+id/headerID"
+            layout="@layout/header_rect"></include>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:orientation="vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/headerID"
 
-            android:layout_height="fill_parent">
+            android:background="@color/white"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/detailMessageID"
-                android:textSize="12sp"
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:text="time"
-                android:layout_marginTop="2dp"
-                android:textColor="@color/black"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"></LinearLayout>
 
-            <TextView
-                android:id="@+id/detailTimeID"
-                android:textSize="10sp"
+            <RelativeLayout
                 android:layout_width="fill_parent"
-                android:text="time"
-                android:layout_marginTop="2dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+
+                android:orientation="vertical">
 
 
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/detailMessageID"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="message"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/detailTimeID"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="time"
+                        android:textSize="15sp" />
+                    </LinearLayout>
+                </ScrollView>
+
+
+
+
+            </RelativeLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
     </RelativeLayout>
 
 </android.support.wearable.view.BoxInsetLayout>

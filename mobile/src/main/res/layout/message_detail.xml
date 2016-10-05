@@ -71,14 +71,14 @@
 
             <ScrollView
                 android:layout_width="wrap_content"
-                android:scrollbars="none"
-                android:layout_height="wrap_content">
+                android:layout_height="fill_parent">
             <TextView
                 android:id="@+id/detailMessageID"
                 android:textSize="20sp"
                 android:layout_width="fill_parent"
-                android:text="time"
+                android:text="Time"
                 android:layout_marginTop="10dp"
+                android:paddingBottom="10dp"
                 android:textColor="@color/black"
                 android:layout_height="wrap_content" />
             </ScrollView>

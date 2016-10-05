@@ -38,6 +38,7 @@
             android:paddingRight="@dimen/diag_content_side_padding"
             style="@style/Widget.WearDiag.TextView.Message"
             android:textColor="@color/dark_grey"
+            android:textSize="15sp"
             />
 
         <LinearLayout

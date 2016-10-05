@@ -23,7 +23,7 @@
 
             android:layout_marginTop="4dp"
             android:textColor="@color/white"
-            android:textSize="15sp"
+            android:textSize="18sp"
             />
         <TextView
             android:id="@+id/timeID"
@@ -31,11 +31,11 @@
             android:layout_height="wrap_content"
             android:text="a minute ago"
             android:textColor="@color/light_grey"
-            android:textSize="10sp"
+            android:textSize="15sp"
             />
 
         <TextView
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:id="@+id/textmessageID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +43,7 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/light_grey"
             android:ellipsize="end"
+
             android:text="a hour ago  have recieved this message and i feel good about it "
             />
 

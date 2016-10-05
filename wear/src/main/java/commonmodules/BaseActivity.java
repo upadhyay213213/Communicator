@@ -51,10 +51,11 @@ public class BaseActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 b.dismiss();
+                b.cancel();
             }
         });
         edt.setText(message);
-        errorMsg.setText("Error");
+        errorMsg.setText("Error!");
 
         b.show();
     }
@@ -85,13 +86,13 @@ public class BaseActivity extends FragmentActivity {
                 message = "Please login through Phone before proceeding further.";
                 break;
             case 400:
-                message ="Bad Request";
+                message ="Bad Request.";
                         break;
             case 101:
-            message="Something went wrong. Please try again later";
+            message="Something went wrong. Please try again later.";
                 break;
-                default: message="Something went wrong. Please try again later";
-break;
+                default: message="Something went wrong. Please try again later.";
+               break;
         }
         buildAlertMessageNoGps(ctx, message,"");
     }
@@ -110,6 +111,7 @@ break;
             @Override
             public void onClick(View v) {
                 b.dismiss();
+                b.cancel();
             }
         });
         edt.setText(message);

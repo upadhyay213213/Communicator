@@ -69,7 +69,7 @@ public class HomeScreenWear extends BaseActivity implements
         if(!PrefrensUtils.getDeviceToken(this).isEmpty()){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
         }else{
-            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Phone.","Error");
+            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Phone.","Error!");
         }
 
     }
