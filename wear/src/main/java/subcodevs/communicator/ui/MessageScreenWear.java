@@ -61,7 +61,7 @@ public class MessageScreenWear extends BaseActivity  {
         mListView = (ListView) stub.findViewById(R.id.messageListID);
         String mMessage=PrefrensUtils.getMessageDetail(this);
         if(mMessage.isEmpty()){
-            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your iPhone.","Error!");
+            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Android Phone.","Error!");
         }else{
             ArrayList<MessageResposneDatabase> messageResposneDatabaseArrayList = new ArrayList<MessageResposneDatabase>();
             try {

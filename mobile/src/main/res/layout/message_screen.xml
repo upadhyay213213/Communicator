@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/light_grey"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
+    <include
+        android:id="@+id/footterID"
+        layout="@layout/footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
 
 
     <include
         android:id="@+id/headerID"
         layout="@layout/header"
 
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        >
-    </include>
+        android:layout_height="wrap_content"></include>
 
     <ListView
-        android:layout_marginTop="10dp"
         android:id="@+id/messageListID"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/footterID"
+        android:layout_below="@id/headerID"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
         android:divider="@color/light_grey"
-        android:layout_width="match_parent"
         android:dividerHeight="1dp"
-        android:layout_height="fill_parent">
+        android:layout_marginBottom="10dp"
+        >
 
 
     </ListView>
 
-</LinearLayout>
+
+</RelativeLayout>

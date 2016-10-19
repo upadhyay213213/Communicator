@@ -69,7 +69,7 @@ public class HomeScreenWear extends BaseActivity implements
         if(!PrefrensUtils.getDeviceToken(this).isEmpty()){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
         }else{
-            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Phone.","Error!");
+            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Android Phone.","Error!");
         }
 
     }
@@ -131,6 +131,10 @@ public class HomeScreenWear extends BaseActivity implements
                 e.printStackTrace();
             }
 
+             if(mProgressDialog.getVisibility()==View.VISIBLE){
+                 mProgressDialog.setVisibility(View.GONE);
+             }
+
 
         }
     }
@@ -144,6 +148,11 @@ public class HomeScreenWear extends BaseActivity implements
         }catch (Exception e){
             handleErrorCase(this, 101);
         }
+
+        if(mProgressDialog.getVisibility()==View.VISIBLE){
+            mProgressDialog.setVisibility(View.GONE);
+        }
+
 
     }
 

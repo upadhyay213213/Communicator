@@ -4,7 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
@@ -48,6 +53,8 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
     private Handler handler;
     private GoogleApiClient mGoogleApiClient;
     private boolean isWithoutWear;
+    private TextView mBottomText;
+    private LinearLayout mBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +69,21 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
     }
 
     private void initializeUI() {
+        mBottomText = (TextView) findViewById(R.id.bottomTextID);
+        mBackButton = (LinearLayout) findViewById(R.id.fotterID);
         mListView = (ListView) findViewById(R.id.messageListID);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
+
+        mBottomText.setText("Back");
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
 

@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -351,8 +352,40 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            requestUpdateVolume();
         }
 
+    }
+
+    private void requestUpdateVolume() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if(mGoogleApiClient.isConnected()){
+                    if(!isWithoutWear){
+                        try {
+                            //  JSONObject json = dbJson.getJSON();
+                            JSONObject mJosn =  new JSONObject();
+                            mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
+                            if(mLastLocation==null){
+                                mJosn.put("lat",PrefrensUtils.getLat(HomeScreen.this));
+                                mJosn.put("long",PrefrensUtils.getLong(HomeScreen.this));
+                            }else{
+                                mJosn.put("lat",mLastLocation.getLatitude());
+                                mJosn.put("long",mLastLocation.getLongitude());
+                            }
+
+                            mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
+                            new SendToDataLayerThread("/path", mJosn.toString()).start();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        }, 5000);
     }
 
     @Override

@@ -2,6 +2,10 @@ package subcodevs.communicator.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -33,6 +37,8 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
 
     private String mMessagePush;
     private String mMessageID;
+    private TextView mBottomText;
+    private LinearLayout mBackButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,9 +58,11 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
             initializeUI();
             if (!PrefrensUtils.getPushID(this).isEmpty()) {
                 startProgress();
+                mBottomText.setText("Back");
                 RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getPushID(this), "MessageDetail");
             }
             else {
+                mBottomText.setText("Back To Messages");
                 PrefrensUtils.setPushID(this,"");
                 position = getIntent().getStringExtra("clickposition");
                 ArrayList<MessageResposneDatabase> messageResposneDatabases = DataBaseQuery.getMessageResponse();
@@ -70,6 +78,16 @@ public class MessageDetail extends BaseActivityWear implements RequestResponseIn
         mUserName = (TextView) findViewById(R.id.detailuserNameID);
         mTime = (TextView) findViewById(R.id.detailTimeID);
         mMessage = (TextView) findViewById(R.id.detailMessageID);
+        mBottomText = (TextView) findViewById(R.id.bottomTextID);
+        mBackButton = (LinearLayout) findViewById(R.id.fotterID);
+
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override

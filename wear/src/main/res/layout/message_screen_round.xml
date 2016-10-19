@@ -14,7 +14,7 @@
             android:id="@+id/headerID"
             layout="@layout/header_round"
             android:layout_width="fill_parent"
-            android:layout_height="30dp"
+            android:layout_height="60dp"
 
             >
         </include>

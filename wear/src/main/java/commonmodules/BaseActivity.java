@@ -80,10 +80,10 @@ public class BaseActivity extends FragmentActivity {
         String message="Something went wrong. Please try again later.";
         switch (response){
             case 404:
-            message="Please login through Phone before proceeding further.";
+            message="Please login through Android Phone before proceeding further.";
                 break;
             case 401:
-                message = "Please login through Phone before proceeding further.";
+                message = "Please login through Android Phone before proceeding further.";
                 break;
             case 400:
                 message ="Bad Request.";
