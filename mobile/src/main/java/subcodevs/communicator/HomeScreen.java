@@ -2,6 +2,8 @@ package subcodevs.communicator;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,12 +12,16 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -43,6 +49,14 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import apputils.PrefrensUtils;
 import commonmodules.BaseActivityWear;
@@ -75,6 +89,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     private boolean isWithoutWear;
     private TextView textIDAssitance;
     private TextView textIDMessage;
+    private ImageView headerImageID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,13 +148,54 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     }
 
+    //The BroadcastReceiver that listens for bluetooth broadcasts
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+            }
+            else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                if(!isWithoutWear){
+                    try {
+                        //  JSONObject json = dbJson.getJSON();
+                        JSONObject mJosn =  new JSONObject();
+                        mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
+                        if(mLastLocation==null){
+                            mJosn.put("lat",PrefrensUtils.getLat(HomeScreen.this));
+                            mJosn.put("long",PrefrensUtils.getLong(HomeScreen.this));
+                        }else{
+                            mJosn.put("lat",mLastLocation.getLatitude());
+                            mJosn.put("long",mLastLocation.getLongitude());
+                        }
+
+                        mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
+                        new SendToDataLayerThread("/path", mJosn.toString()).start();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
+            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+            }
+        }
+    };
     private void initializeUI() {
+
         textIDAssitance = (TextView) findViewById(R.id.textIDAssitance);
         textIDMessage = (TextView) findViewById(R.id.textIDMessage);
         mMessage = (ImageView) findViewById(R.id.messageID);
         mLogoutButton = (TextView) findViewById(R.id.logoutButtonID);
         mAssistance = (ImageView) findViewById(R.id.assistanceID);
+        headerImageID = (ImageView) findViewById(R.id.headerImageID);
         Display mDisplay = getWindowManager().getDefaultDisplay();
         final int width  = mDisplay.getWidth();
         final int height = mDisplay.getHeight();
@@ -153,7 +209,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 textIDMessage.setTextSize(20);
                 textIDAssitance.setTextSize(20);
             }catch (Exception e){
-
+                Log.e(TAG, e.toString());
             }
         }
 
@@ -165,6 +221,14 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
         if(mGoogleApiClient.isConnected() && mLastLocation!=null){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
         }
+
+        headerImageID.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                sendMail();
+                return false;
+            }
+        });
     }
 
 
@@ -179,6 +243,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     @Override
     protected void onResume() {
         super.onResume();
+
         RequestManager.mRequestManager.responseInterface = this;
         if (PrefrensUtils.getPushToken(this).isEmpty()) {
             registerPushNotificationServices();
@@ -203,6 +268,31 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+
+        if(!isWithoutWear){
+            try {
+                //  JSONObject json = dbJson.getJSON();
+                JSONObject mJosn =  new JSONObject();
+                mJosn.put("token",PrefrensUtils.getDeviceToken(HomeScreen.this));
+                if(mLastLocation==null){
+                    mJosn.put("lat",PrefrensUtils.getLat(this));
+                    mJosn.put("long",PrefrensUtils.getLong(this));
+                }else{
+                    mJosn.put("lat",mLastLocation.getLatitude());
+                    mJosn.put("long",mLastLocation.getLongitude());
+                }
+
+                mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
+                new SendToDataLayerThread("/path", mJosn.toString()).start();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+
+        saveLog();
     }
 
     @Override
@@ -235,10 +325,9 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
 
-            PrefrensUtils.setLat(HomeScreen.this,String.valueOf(latitude));
-            PrefrensUtils.setLong(HomeScreen.this,String.valueOf(longitude));
+            PrefrensUtils.setLat(HomeScreen.this, String.valueOf(latitude));
+            PrefrensUtils.setLong(HomeScreen.this, String.valueOf(longitude));
 
-            System.out.println("LatLong" + latitude + " " + longitude);
         }
         return mLastLocation;
     }
@@ -314,6 +403,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             buildGoogleApiClientWithoutWear();
             createLocationRequest();
         }
+        Log.d(TAG, "Connection to google client failed");
 
     }
 
@@ -327,7 +417,9 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     @Override
     public void onConnected(Bundle arg0) {
+        Log.d(TAG, "Connected to google client");
         displayLocation();
+       // Toast.makeText(this,String.valueOf(isWithoutWear),Toast.LENGTH_SHORT).show();
         if(mLastLocation!=null){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
         }
@@ -350,18 +442,23 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 mJosn.put("userid",PrefrensUtils.getUserID(HomeScreen.this));
                 new SendToDataLayerThread("/path", mJosn.toString()).start();
             } catch (JSONException e) {
+                Log.e(TAG, e.toString());
                 e.printStackTrace();
             }
 
-            requestUpdateVolume();
         }
+
+        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter1);
+        this.registerReceiver(mReceiver, filter2);
+        this.registerReceiver(mReceiver, filter3);
 
     }
 
     private void requestUpdateVolume() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
+
                 if(mGoogleApiClient.isConnected()){
                     if(!isWithoutWear){
                         try {
@@ -383,20 +480,21 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                         }
                     }
                 }
-
-            }
-        }, 5000);
     }
 
     @Override
     public void onConnectionSuspended(int arg0) {
         mGoogleApiClient.connect();
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         displayLocation();
+        if(mLastLocation!=null){
+            RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
+        }
     }
 
     private boolean checkPermission() {
@@ -479,6 +577,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e(TAG, e.toString());
             }
         }
         stopProgress();
@@ -486,12 +585,11 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
 
     @Override
     public void errorListener(VolleyError error) {
-        System.out.println("ResponseHomeScreen" + error.getMessage());
         stopProgress();
         try{
             handleErrorCase(this, error.networkResponse.statusCode);
         }catch (Exception e){
-
+         Log.e(TAG,e.toString());
         }
 
     }
@@ -548,12 +646,60 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             for (Node node : nodes.getNodes()) {
                 MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), path, message.getBytes()).await();
                 if (result.getStatus().isSuccess()) {
-                    Log.v("myTag", "Message: {" + message + "} sent to: " + node.getDisplayName());
+                    Log.d(TAG, "Message from HomeScreen: {" + message + "} sent to: " + node.getDisplayName());
                 }
                 else {
-                    Log.v("myTag", "ERROR: failed to send Message");
+                    Log.d(TAG, "ERROR: failed to send Message from Home Screen");
                 }
             }
         }
+    }
+
+
+    public void saveLog(){
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d");
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+
+            StringBuilder log=new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                log.append(line);
+            }
+            writeToFile(log.toString());
+        } catch (IOException e) {
+        }
+    }
+    private void writeToFile(String data) {
+        String root = Environment.getExternalStorageDirectory().toString();
+
+        File oldFile = new File(root + "/Communicator_LOGS/communicator.txt");
+        long fileBytes = oldFile.length();
+        if(fileBytes > 14000000){
+            oldFile.delete();
+        }
+
+        File myDir = new File(root + "/Communicator_LOGS");
+        myDir.mkdirs();
+        String fname = "communicator.txt";
+        File file = new File (myDir, fname);
+
+
+
+        try {
+            FileOutputStream stream = new FileOutputStream(file, true);
+            stream.write(data.getBytes());
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 }

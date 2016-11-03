@@ -1,7 +1,9 @@
 package subcodevs.communicator;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.Button;
@@ -44,7 +46,6 @@ public class HomeScreenWear extends BaseActivity implements
         Intent mIntent = new Intent(this, DataLayerListenerService.class);
         startService(mIntent);
         RequestManager.mRequestManager.responseInterface = this;
-
     }
 
 
@@ -69,7 +70,7 @@ public class HomeScreenWear extends BaseActivity implements
         if(!PrefrensUtils.getDeviceToken(this).isEmpty()){
             RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getDeviceToken(this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "UpdateLocationRequest");
         }else{
-            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Android Phone.","Error!");
+         //   showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Android Phone.","Error!");
         }
 
     }
@@ -98,16 +99,28 @@ public class HomeScreenWear extends BaseActivity implements
         super.onPause();
 
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.assistanceID:
-                startProgress();
-                    RequestManager.getInstance().requestAssistance(PrefrensUtils.getDeviceToken(HomeScreenWear.this),PrefrensUtils.getUserID(HomeScreenWear.this),PrefrensUtils.getLat(this),PrefrensUtils.getLong(this),"requestAssistance");
+
+                try {
+
+                    if(!PrefrensUtils.getDeviceToken(this).isEmpty()){
+                        startProgress();
+                        RequestManager.getInstance().requestAssistance(PrefrensUtils.getDeviceToken(HomeScreenWear.this), PrefrensUtils.getUserID(HomeScreenWear.this), PrefrensUtils.getLat(this), PrefrensUtils.getLong(this), "requestAssistance");
+                    }else{
+                        showChangeLangDialog(this, "Something went wrong. Please login through your android phone and try again.", "Error!");
+                    }
+                }catch (Exception e){
+
+                }
+
+
                 break;
 
             case R.id.messageID:
+                this.finish();
                 startActivity(new Intent(HomeScreenWear.this, MessageScreenWear.class));
                 break;
         }
@@ -115,42 +128,50 @@ public class HomeScreenWear extends BaseActivity implements
 
     @Override
     public void responseListener(Object o,String callType) {
-        stopProgress();
-        System.out.println("ResponseHomeScreenWEAR" + o.toString());
-         if(callType.equals("UpdateLocationRequest")){
+        try {
+            stopProgress();
+            System.out.println("ResponseHomeScreenWEAR" + o.toString());
+            if(callType.equals("UpdateLocationRequest")){
 
 
-        }else if(callType.equals("requestAssistance")){
-            try {
-                JSONObject json = new JSONObject(o.toString());
-                String type =json.getString("type");
-                if(type.equals("assistance")){
-                    showChangeLangDialog(this,"Concerned people have been informed. They will contact you soon.","Success!");
+            }else if(callType.equals("requestAssistance")){
+                try {
+                    JSONObject json = new JSONObject(o.toString());
+                    String type =json.getString("type");
+                    if(type.equals("assistance")){
+                        showChangeLangDialog(this,"Concerned people have been informed. They will contact you soon.","Success!");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+                if(mProgressDialog.getVisibility()==View.VISIBLE){
+                    mProgressDialog.setVisibility(View.GONE);
+                }
             }
-
-             if(mProgressDialog.getVisibility()==View.VISIBLE){
-                 mProgressDialog.setVisibility(View.GONE);
-             }
-
+        }catch (Exception e){
 
         }
+
     }
 
     @Override
     public void errorListener(VolleyError error) {
-        System.out.println("ResponseHomeScreen" + error.getMessage());
-        stopProgress();
         try {
-            handleErrorCase(this, error.networkResponse.statusCode);
-        }catch (Exception e){
-            handleErrorCase(this, 101);
-        }
+            System.out.println("ResponseHomeScreen" + error.getMessage());
+            stopProgress();
+            try {
+                handleErrorCase(this, error.networkResponse.statusCode);
+            }catch (Exception e){
+                handleErrorCase(this, 101);
+            }
 
-        if(mProgressDialog.getVisibility()==View.VISIBLE){
-            mProgressDialog.setVisibility(View.GONE);
+            if(mProgressDialog.getVisibility()==View.VISIBLE){
+                mProgressDialog.setVisibility(View.GONE);
+            }
+
+        }catch (Exception e){
+
         }
 
 
@@ -160,6 +181,11 @@ public class HomeScreenWear extends BaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.finish();
+        try {
+            this.finish();
+        }catch (Exception e){
+
+        }
+
     }
 }

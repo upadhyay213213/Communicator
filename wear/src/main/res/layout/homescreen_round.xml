@@ -27,11 +27,11 @@
 
             <ImageView
                 android:id="@+id/assistanceID"
-                android:layout_width="60dp"
+                android:layout_width="35dp"
                 android:background="@drawable/icon_assistance"
-                android:layout_marginLeft="40dp"
-                android:layout_centerVertical="true"
-                android:layout_height="60dp" />
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="35dp" />
 
             <TextView
                 android:id="@+id/textIDAssitance"
@@ -40,19 +40,19 @@
                 android:textColor="#904128"
                 android:text="Assistance"
                 android:textSize="12sp"
-                android:layout_marginLeft="45dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_below="@id/assistanceID"
                 />
 
             <ImageView
                 android:id="@+id/messageID"
-                android:layout_width="60dp"
+                android:layout_width="35dp"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/icon_message"
-                android:layout_marginRight="40dp"
-                android:layout_centerVertical="true"
-                android:layout_height="60dp" />
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="35dp" />
 
             <TextView
                 android:id="@+id/textIDMessage"
@@ -63,7 +63,7 @@
                 android:layout_alignParentRight="true"
                 android:textSize="12sp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginRight="25dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/messageID"
                 />

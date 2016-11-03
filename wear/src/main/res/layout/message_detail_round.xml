@@ -52,17 +52,19 @@
                     android:textSize="20sp"
                     android:layout_width="fill_parent"
                     android:text="time"
-                    android:layout_marginTop="22dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="5dp"
                     android:textColor="@color/black"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="30dp"
                     android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/detailTimeID"
                         android:textSize="15sp"
                         android:layout_width="fill_parent"
-                        android:text="time"
-                        android:layout_marginLeft="10dp"
+                        android:text="abcdefghifkjlmonpqrtuvwxyzsjnajcjcs"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
                         android:layout_marginTop="2dp"
                         android:layout_height="wrap_content" />
                     </LinearLayout>

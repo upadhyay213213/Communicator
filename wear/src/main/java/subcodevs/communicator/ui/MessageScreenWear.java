@@ -1,9 +1,11 @@
 package subcodevs.communicator.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import adapter.MessageAdapter;
 import apputils.PrefrensUtils;
 import commonmodules.BaseActivity;
 import model.MessageResposneDatabase;
+import subcodevs.communicator.HomeScreenWear;
 import subcodevs.communicator.R;
 
 /**
@@ -27,13 +30,14 @@ public class MessageScreenWear extends BaseActivity  {
     private ListView mListView;
     private MessageAdapter messageAdapter;
     private TextView mUserName;
-    ImageView mBackClick;
+    LinearLayout mBackClick;
+    boolean isBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_screen);
-
+        isBackPressed = false;
         //making  android  view shape aware
         WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -49,11 +53,14 @@ public class MessageScreenWear extends BaseActivity  {
     }
 
     private void initializeUI(WatchViewStub stub) {
-        mBackClick = (ImageView) findViewById(R.id.headerBackID);
+        mBackClick = (LinearLayout) stub.findViewById(R.id.headerBackID);
         mBackClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                if(!isBackPressed){
+                    isBackPressed=true;
+                    onBackPressed();
+                }
             }
         });
         mUserName = (TextView) stub.findViewById(R.id.usernameHeaderID);
@@ -61,7 +68,7 @@ public class MessageScreenWear extends BaseActivity  {
         mListView = (ListView) stub.findViewById(R.id.messageListID);
         String mMessage=PrefrensUtils.getMessageDetail(this);
         if(mMessage.isEmpty()){
-            showChangeLangDialog(this,"Something went wrong. Please make sure that your Android Watch is paired properly with your Android Phone.","Error!");
+            showChangeLangDialog(this,"Please open message screen first on your android phone to see messages on watch.","Error!");
         }else{
             ArrayList<MessageResposneDatabase> messageResposneDatabaseArrayList = new ArrayList<MessageResposneDatabase>();
             try {
@@ -95,8 +102,13 @@ public class MessageScreenWear extends BaseActivity  {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        this.finish();
+        try{
+            this.finish();
+            startActivity(new Intent(MessageScreenWear.this, HomeScreenWear.class));
+        }catch (Exception e){
+
+        }
+
     }
 }
 

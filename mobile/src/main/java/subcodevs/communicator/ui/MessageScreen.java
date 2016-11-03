@@ -2,6 +2,7 @@ package subcodevs.communicator.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import adapter.MessageAdapter;
@@ -55,6 +61,7 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
     private boolean isWithoutWear;
     private TextView mBottomText;
     private LinearLayout mBackButton;
+    private String TAG="MessageScreen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,10 +171,10 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
             try{
                 new SendToDataLayerThread("/path", sendDataToWatch().toString()).start();
             }catch (Exception e){
-
+                Log.e(TAG,e.toString());
             }
         }
-
+      saveLog();
 
     }
 
@@ -223,6 +230,8 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
                         mJsonObject.put("time",messageResponseArrayList.get(i).getmTime());
                         mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getmSenderDisplayName());
                         mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
+                        mJsonObject.put("deviceval",PrefrensUtils.getDeviceToken(this));
+                        mJsonObject.put("useridfromMessage",PrefrensUtils.getUserID(this));
                         jsonArray.put(mJsonObject);
                     }
                 }else{
@@ -233,11 +242,14 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
                         mJsonObject.put("time",messageResponseArrayList.get(i).getmTime());
                         mJsonObject.put("senderdisplayname",messageResponseArrayList.get(i).getmSenderDisplayName());
                         mJsonObject.put("messageread",messageResponseArrayList.get(i).isMessageRead());
+                        mJsonObject.put("deviceval",PrefrensUtils.getDeviceToken(this));
+                        mJsonObject.put("useridfromMessage",PrefrensUtils.getUserID(this));
                         jsonArray.put(mJsonObject);
                     }
                 }
             }
         } catch (Exception e) {
+            Log.e(TAG,e.toString());
             e.printStackTrace();
         }
         return jsonArray;
@@ -258,13 +270,55 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
             for (Node node : nodes.getNodes()) {
                 MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), path, message.getBytes()).await();
                 if (result.getStatus().isSuccess()) {
-                    Log.v("myTag", "Message: {" + message + "} sent to: " + node.getDisplayName());
+                    Log.v(TAG, "Message: {" + message + "} sent to: " + node.getDisplayName());
                 }
                 else {
-                    Log.v("myTag", "ERROR: failed to send Message");
+                    Log.v(TAG, "ERROR: failed to send Message");
                 }
             }
         }
+    }
+
+    public void saveLog(){
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d");
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+
+            StringBuilder log=new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                log.append(line);
+            }
+            writeToFile(log.toString());
+        } catch (IOException e) {
+            Log.e(TAG,e.toString());
+        }
+    }
+    private void writeToFile(String data) {
+        String root = Environment.getExternalStorageDirectory().toString();
+
+        File oldFile = new File(root + "/Communicator_LOGS/communicator.txt");
+        long fileBytes = oldFile.length();
+        if(fileBytes > 14000000){
+            oldFile.delete();
+        }
+
+        File myDir = new File(root + "/Communicator_LOGS");
+        myDir.mkdirs();
+        String fname = "communicator.txt";
+        File file = new File (myDir, fname);
+
+
+
+        try {
+            FileOutputStream stream = new FileOutputStream(file, true);
+            stream.write(data.getBytes());
+        }
+        catch (IOException e) {
+            Log.e(TAG, "File write failed: " + e.toString());
+        }
+
     }
 
 }

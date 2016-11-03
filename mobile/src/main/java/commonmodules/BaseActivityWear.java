@@ -5,12 +5,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import apputils.PrefrensUtils;
 import subcodevs.communicator.ui.LoginScreen;
@@ -126,5 +130,26 @@ public class BaseActivityWear extends FragmentActivity {
         buildAlertMessageNoGps(ctx, message);
     }
 
+    public void sendMail() {
+        String root = Environment.getExternalStorageDirectory().toString();
 
+        String fileConnectExisting = root + "/Communicator_LOGS/communicator.txt";
+
+        //Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        // set the type to 'email'
+        emailIntent.setType("text/plain");
+        String to[] = {"rescommsupport@subcodevs.com"};
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
+        // the attachment
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        Uri u1 = Uri.parse("file://" + fileConnectExisting);
+        uris.add(u1);
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        //emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fileConnectExisting));
+        //emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fileSetupNew));
+        // the mail subject
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Communicator Android App Logs");
+        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
 }

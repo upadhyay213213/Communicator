@@ -33,11 +33,10 @@
             android:layout_width="match_parent"
             android:text="ajhdsjdjakdjkasdsskaj"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:paddingBottom="@dimen/diag_content_bottom_padding"
             android:paddingLeft="@dimen/diag_content_side_padding"
             android:paddingRight="@dimen/diag_content_side_padding"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             style="@style/Widget.WearDiag.TextView.Message"
             android:textColor="@color/dark_grey"
             android:textSize="15sp"
@@ -76,4 +75,3 @@
         </LinearLayout>
     </LinearLayout>
 </android.support.wearable.view.ObservableScrollView>
-    <!-- From: file:/tmp/tmp-deduplicated574725355717134199/third_party/java_src/android_libs/android_wear/wearable_support/java/android/support/wearable/res/layout/alert_dialog_wearable.xml -->

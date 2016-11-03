@@ -9,25 +9,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include
-
-            android:id="@+id/headerID"
-            layout="@layout/header_round"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-
-            >
-        </include>
         <LinearLayout
-            android:layout_below="@id/headerID"
+            android:layout_width="fill_parent"
+            android:background="@color/black"
+            android:orientation="horizontal"
+            android:id="@+id/headerBackID"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:layout_marginTop="5dp"
+
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:padding="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="55dp"
+                android:background="@drawable/back_btn" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/usernameHeaderID"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="1dp"
+                android:text="userName"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/white" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@id/headerBackID"
             android:layout_width="fill_parent"
             android:orientation="vertical"
+
             android:layout_height="match_parent">
             <ListView
 
                 android:id="@+id/messageListID"
                 android:background="@color/dark_grey"
                 android:divider="@color/black"
+               android:layout_marginLeft="40dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginRight="40dp"
                 android:layout_width="match_parent"
                 android:dividerHeight="5dp"
                 android:layout_height="fill_parent">

@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.wearable.view.WatchViewStub;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -51,9 +54,31 @@ public class BaseActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 b.dismiss();
-                b.cancel();
+                if (b.isShowing()) {
+                    b.dismiss();
+                }
             }
         });
+
+        // Hide after some seconds
+        final Handler handler  = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (b.isShowing()) {
+                    b.dismiss();
+                }
+            }
+        };
+
+        b.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.removeCallbacks(runnable);
+            }
+        });
+        handler.postDelayed(runnable, 10000);
+
         edt.setText(message);
         errorMsg.setText("Error!");
 
@@ -107,13 +132,40 @@ public class BaseActivity extends FragmentActivity {
         final TextView edt = (TextView) dialogView.findViewById(R.id.messageComID);
         final TextView errorMsg = (TextView) dialogView.findViewById(R.id.alertTitle);
         final Button btn = (Button) dialogView.findViewById(R.id.button1);
+
+
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 b.dismiss();
-                b.cancel();
+
+                if(b.isShowing()){
+
+                    b.dismiss();
+                }
             }
         });
+
+        // Hide after some seconds
+        final Handler handler  = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (b.isShowing()) {
+                    b.dismiss();
+                }
+            }
+        };
+
+        b.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.removeCallbacks(runnable);
+            }
+        });
+        handler.postDelayed(runnable, 20000);
+
         edt.setText(message);
         errorMsg.setText(error);
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -37,12 +38,14 @@ public class MessageDetail extends BaseActivity implements RequestResponseInterf
 
     private String mMessagePush;
     private String mMessageID;
-    private ImageView mBackClick;
+    private LinearLayout mBackClick;
+    private boolean isBackPressed;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_detail_wear);
+        isBackPressed=false;
         RequestManager.getInstance().responseInterface = this;
         WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -52,18 +55,21 @@ public class MessageDetail extends BaseActivity implements RequestResponseInterf
                 mUserName = (TextView) stub.findViewById(R.id.usernameHeaderID);
                 mTime = (TextView) stub.findViewById(R.id.detailTimeID);
                 mMessage = (TextView) stub.findViewById(R.id.detailMessageID);
-                mBackClick = (ImageView) findViewById(R.id.headerBackID);
+                mBackClick = (LinearLayout) stub.findViewById(R.id.headerBackID);
                 mBackClick.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onBackPressed();
+                        if(!isBackPressed){
+                            isBackPressed=true;
+                            onBackPressed();
+                        }
                     }
                 });
-                if (getIntent().getStringExtra("messageID") != null) {
-                    startProgress();
-                    mMessageID = getIntent().getStringExtra("messageID");
-                    RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(MessageDetail.this),PrefrensUtils.getDeviceToken(MessageDetail.this),mMessageID,"MessageDetail");
-                } else {
+//                if (getIntent().getStringExtra("messageID") != null) {
+//                    startProgress();
+//                    mMessageID = getIntent().getStringExtra("messageID");
+//                    RequestManager.getInstance().RequestMessageDetail(PrefrensUtils.getUserID(MessageDetail.this),PrefrensUtils.getDeviceToken(MessageDetail.this),mMessageID,"MessageDetail");
+//                } else {
                     position = getIntent().getStringExtra("clickposition");
                     String mMessageNew = PrefrensUtils.getMessageDetail(MessageDetail.this);
                     ArrayList<MessageResposneDatabase> messageResposneDatabaseArrayList = new ArrayList<MessageResposneDatabase>();
@@ -84,7 +90,7 @@ public class MessageDetail extends BaseActivity implements RequestResponseInterf
                     mUserName.setText(messageResposneDatabaseArrayList.get(0).getmSenderDisplayName());
                     mMessage.setText(messageResposneDatabaseArrayList.get(0).getmMessage());
                     mTime.setText(CommonUtils.getTimeDifferance(messageResposneDatabaseArrayList.get(0).getmTime()));
-                }
+          //      }
             }
         });
 
@@ -125,11 +131,12 @@ public class MessageDetail extends BaseActivity implements RequestResponseInterf
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if(mMessageID!=null && !mMessageID.isEmpty()){
+        try {
             this.finish();
-            startActivity(new Intent(MessageDetail.this, HomeScreenWear.class));
+            startActivity(new Intent(MessageDetail.this, MessageScreenWear.class));
+        }catch (Exception e){
 
         }
+
     }
 }
