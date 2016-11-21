@@ -17,6 +17,8 @@ public class AppConstatnts {
 
     public static String GET_MESSAGE_DETAIL="http://aptoseniorcare.com/wp-json/v1/push-service/";
 
+    public static String GET_LOCATION_FLAG="http://aptoseniorcare.com/wp-json/v1/user/sendtime?userid=";
+
 
 
 }

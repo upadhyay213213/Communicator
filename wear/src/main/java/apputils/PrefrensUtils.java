@@ -18,7 +18,7 @@ public class PrefrensUtils {
     private static String KEY_LAT="latkey";
     private static String KEY_LONG="longkey";
     private static String KEY_MESSAGE_DETAIL="Key_Message_Detail";
-
+    private static String KEY_MESSAGE_TIME="Key_Message_time";
 
     public static void setDeviceToken(Context context, String token) {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
@@ -131,5 +131,17 @@ public class PrefrensUtils {
         return sharedpreferences.getString(KEY_MESSAGE_DETAIL, "");
     }
 
+
+    public static void setTime(Context context, long name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putLong(KEY_MESSAGE_TIME, name);
+        editor.apply();
+    }
+
+    public static long getTime(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getLong(KEY_MESSAGE_TIME,0);
+    }
 
 }

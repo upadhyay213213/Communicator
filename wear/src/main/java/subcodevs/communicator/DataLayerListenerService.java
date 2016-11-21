@@ -56,7 +56,8 @@ public class DataLayerListenerService extends WearableListenerService {
                     PrefrensUtils.setDeviceToken(getApplicationContext(),token);
                     PrefrensUtils.setLat(getApplicationContext(), lat);
                     PrefrensUtils.setLong(getApplicationContext(), longi);
-                    PrefrensUtils.setUserID(getApplicationContext(),useid);
+                    PrefrensUtils.setUserID(getApplicationContext(), useid);
+                    PrefrensUtils.setTime(getApplicationContext(),System.currentTimeMillis());
                 }catch (JSONException e){
 
                 }
