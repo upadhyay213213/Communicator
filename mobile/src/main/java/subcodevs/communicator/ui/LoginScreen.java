@@ -2,19 +2,23 @@ package subcodevs.communicator.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 
+import appconstant.AppConstatnts;
 import apputils.PrefrensUtils;
 import commonmodules.BaseActivityWear;
 import commonmodules.CommonUtils;
 import model.UserDetails;
 import subcodevs.communicator.HomeScreen;
 import subcodevs.communicator.R;
+import subcodevs.communicator.SettingScreen;
 import webclient.RequestManager;
 import webclient.RequestResponseInterface;
 
@@ -28,7 +32,8 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
     private String mMessagePush;
     private String mMessageID;
     private boolean isFromMmessageDetail = false;
-
+    private ImageView mHeaderImageView;
+    private int counter=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +52,14 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
         if (getIntent().getStringExtra("MessageIDLogin") != null) {
             mMessageID = getIntent().getStringExtra("MessageIDLogin");
         }
-
-
+        System.out.println("LOGINURL" + PrefrensUtils.getBaseURL(this));
     }
 
     private void initializeUI() {
         mLogin = (EditText) findViewById(R.id.loginID);
         mPassword = (EditText) findViewById(R.id.passwordD);
         mLoginButton = (Button) findViewById(R.id.loginButtonID);
+        mHeaderImageView = (ImageView) findViewById(R.id.headerImageID);
         mLoginButton.setOnClickListener(this);
         mPassword.setTypeface(mLogin.getTypeface());
 
@@ -63,6 +68,19 @@ public class LoginScreen extends BaseActivityWear implements View.OnClickListene
             mLogin.setSelection(mLogin.getText().toString().length());
             mPassword.setText(PrefrensUtils.getPassword(this));
         }
+
+
+        mHeaderImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                counter++;
+                if(counter==3){
+                    counter=0;
+                  showChangeLangDialog();
+                }
+
+            }
+        });
     }
 
     private boolean validateLoginDetails(String username, String password) {

@@ -10,6 +10,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +21,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import apputils.PrefrensUtils;
+import subcodevs.communicator.R;
+import subcodevs.communicator.SettingScreen;
 import subcodevs.communicator.ui.LoginScreen;
 
 /**
@@ -151,5 +157,35 @@ public class BaseActivityWear extends FragmentActivity {
         // the mail subject
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Communicator Android App Logs");
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
+    public void showChangeLangDialog() {
+        android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.custom_dialog, null);
+        dialogBuilder.setView(dialogView);
+        final EditText edt = (EditText) dialogView.findViewById(R.id.editText);
+        dialogBuilder.setTitle("Settings");
+        dialogBuilder.setMessage("Please enter your password");
+        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if(edt.getText().toString().equals("Mydog8it!")){
+                    Intent intent = new Intent(BaseActivityWear.this, SettingScreen.class);
+                    startActivity(intent);
+                    dialog.dismiss();
+                }else{
+                    showChangeLangDialog();
+                    Toast.makeText(BaseActivityWear.this, "Please enter correct password", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+
+            }
+        });
+        android.app.AlertDialog b = dialogBuilder.create();
+        b.show();
     }
 }

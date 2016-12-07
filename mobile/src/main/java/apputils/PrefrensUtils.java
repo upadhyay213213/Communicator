@@ -19,7 +19,9 @@ public class PrefrensUtils {
     private static String KEY_LONG="key_long";
     private static String KEY_LAT="key_lat";
     private static String KEY_PUSHID="key_pushID";
-
+    private static String KEY_INTERVAL="key_interval";
+    private static String KEY_URL="key_URL";
+    private static SharedPreferences sharedpreferences1;
 
     public static void setDeviceToken(Context context, String token) {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
@@ -132,6 +134,31 @@ public class PrefrensUtils {
     public static String getPushID(Context context) {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         return sharedpreferences.getString(KEY_PUSHID, "");
+    }
+
+
+    public static void setTimeInterval(Context context, String name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_INTERVAL, name);
+        editor.apply();
+    }
+
+    public static String getTimeInterval(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getString(KEY_INTERVAL, "13");
+    }
+
+    public static void setBaseURL(Context context, String name) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_URL, name);
+        editor.apply();
+    }
+
+    public static String getBaseURL(Context context) {
+        sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return sharedpreferences.getString(KEY_URL, "http://residentcommunicator.net/");
     }
 
 
