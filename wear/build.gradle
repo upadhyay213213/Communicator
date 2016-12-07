@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 android {
     compileSdkVersion 23
     buildToolsVersion "23"
@@ -33,6 +37,13 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
 //    compile 'com.google.android.gms:play-services-ads:9.4.0'
 //    compile 'com.google.android.gms:play-services-identity:9.4.0'
+
+        // The Fabric Gradle plugin uses an open ended version to react
+        // quickly to Android tooling updates
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+        transitive = true;
+    }
+
 }
 
 //This line is added

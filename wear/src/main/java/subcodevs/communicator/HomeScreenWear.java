@@ -120,8 +120,9 @@ public class HomeScreenWear extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mGoogleApiClient.connect();
-
+        if(mGoogleApiClient!=null){
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
@@ -133,7 +134,10 @@ public class HomeScreenWear extends BaseActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        mGoogleApiClient.disconnect();
+        if(mGoogleApiClient!=null){
+            mGoogleApiClient.disconnect();
+        }
+
 
     }
     @Override

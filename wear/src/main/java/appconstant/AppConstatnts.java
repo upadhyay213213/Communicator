@@ -1,23 +1,29 @@
 package appconstant;
 
+import appmanager.AppController;
+import apputils.PrefrensUtils;
+
 /**
  * Created by nupadhay on 9/14/2016.
  */
 public class AppConstatnts {
 
 
-    public static String LOGIN_URL="http://aptoseniorcare.com/wp-json/v1/account/login";
+    public static String LOGIN_URL=getBaseURL()+"wp-json/v1/account/login";
 
-    public static  String LOCATION_UPDATE="http://aptoseniorcare.com/wp-json/v1/user/location/";
+    public static  String LOCATION_UPDATE=getBaseURL()+"wp-json/v1/user/location/";
 
-    public static String LOCATION_ASSISTANCE="http://aptoseniorcare.com/wp-json/v1/assistance?token=";
+    public static String LOCATION_ASSISTANCE=getBaseURL()+"wp-json/v1/assistance?token=";
 
-    public static String UPDATE_PUSH_TOKEN="http://aptoseniorcare.com/wp-json/v1/push-service?token=";
+    public static String UPDATE_PUSH_TOKEN=getBaseURL()+"wp-json/v1/push-service?token=";
 
-    public static String GET_MESSAGE="http://aptoseniorcare.com/wp-json/v1/push-service/";
+    public static String GET_MESSAGE=getBaseURL()+"wp-json/v1/push-service/";
 
-    public static String GET_MESSAGE_DETAIL="http://aptoseniorcare.com/wp-json/v1/push-service/";
+    public static String GET_MESSAGE_DETAIL=getBaseURL()+"wp-json/v1/push-service/";
 
+    public static String GET_LOCATION_FLAG=getBaseURL()+"wp-json/v1/user/sendtime?userid=";
 
-
+    public static String getBaseURL(){
+        return PrefrensUtils.getBaseURL(AppController.getInstance());
+    }
 }

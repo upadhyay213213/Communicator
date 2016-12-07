@@ -2,9 +2,11 @@ package subcodevs.communicator;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import org.json.JSONArray;
@@ -26,10 +28,7 @@ public class DataLayerListenerService extends WearableListenerService {
 
         if (messageEvent.getPath().equals("/path")) {
             final String message = new String(messageEvent.getData());
-
-
             // do what you want with the json-string
-
             if(message.contains("tokenfromDetail")){
                 try{
                     //  Toast.makeText(this, "MessageFromWear"+message, Toast.LENGTH_SHORT).show();
@@ -43,8 +42,6 @@ public class DataLayerListenerService extends WearableListenerService {
 
                 }
             }
-
-
             if(message.contains("token")){
                 try{
                   //  Toast.makeText(this, "MessageFromWear"+message, Toast.LENGTH_SHORT).show();
@@ -53,6 +50,8 @@ public class DataLayerListenerService extends WearableListenerService {
                     String lat = json.getString("lat");
                     String longi = json.getString("long");
                     String useid=json.getString("userid");
+                    String baseUrl = json.getString("baseurl");
+                    PrefrensUtils.setBaseURL(getApplicationContext(), baseUrl);
                     PrefrensUtils.setDeviceToken(getApplicationContext(),token);
                     PrefrensUtils.setLat(getApplicationContext(), lat);
                     PrefrensUtils.setLong(getApplicationContext(), longi);
@@ -61,6 +60,18 @@ public class DataLayerListenerService extends WearableListenerService {
                 }catch (JSONException e){
 
                 }
+            }else if(message.contains("latService")){
+                try{
+                    JSONObject json = new JSONObject(message);
+                    String lat = json.getString("latService");
+                    String longi = json.getString("longService");
+                    PrefrensUtils.setLat(getApplicationContext(), lat);
+                    PrefrensUtils.setLong(getApplicationContext(), longi);
+                }catch (JSONException e){
+
+                }
+
+
             }else{
                 String mMessageNew = message;
                 JSONArray mJson = null;
@@ -69,7 +80,6 @@ public class DataLayerListenerService extends WearableListenerService {
                     JSONObject mJsonObject = mJson.getJSONObject(0);
                     PrefrensUtils.setDeviceToken(getApplicationContext(), mJsonObject.getString("deviceval"));
                     PrefrensUtils.setUserID(getApplicationContext(), mJsonObject.getString("useridfromMessage"));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -84,5 +94,15 @@ public class DataLayerListenerService extends WearableListenerService {
         } else {
             super.onMessageReceived(messageEvent);
         }
+    }
+
+    @Override
+    public void onPeerConnected(Node node) {
+        super.onPeerConnected(node);
+    }
+
+    @Override
+    public void onPeerDisconnected(Node node) {
+        super.onPeerDisconnected(node);
     }
 }

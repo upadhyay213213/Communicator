@@ -103,21 +103,23 @@ public class LocationServiceCommunicator extends Service implements LocationList
         handler9 = new Handler();
         r8 = new Runnable() {
             public void run() {
-                if(isClickedLocation){
-                    if(mLocation!=null){
+                if (isClickedLocation) {
+                    if (mLocation != null) {
                         // This will call location update every two hours to server and will update the user location on server
-                        UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()),PrefrensUtils.getDeviceToken(AppController.getInstance()),String.valueOf(mLocation.getLatitude()),String.valueOf(mLocation.getLongitude()),"");
+                        UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "");
                     }
                 }
-                handler9.postDelayed(r8, (60 * 60 * 1000)+(60*60*1000));
+                  handler9.postDelayed(r8, (60 * 60 * 1000)+(60*60*1000));
             }
         };
+        handler9.post(r8);
+
 
         handler9.post(r8);
         handler6 = new Handler();
         r6 = new Runnable() {
             public void run() {
-                if(isClickedLocation){
+                if (isClickedLocation) {
                     //If assistance button is tapped this will start location services to fuse the most updated location of the user
                     startLocationUpdates();
                 }
@@ -125,7 +127,6 @@ public class LocationServiceCommunicator extends Service implements LocationList
             }
         };
         handler6.post(r6);
-
 
 
         handler1 = new Handler();
@@ -174,16 +175,13 @@ public class LocationServiceCommunicator extends Service implements LocationList
             try {
                 //  JSONObject json = dbJson.getJSON();
                 JSONObject mJosn = new JSONObject();
-                mJosn.put("token", PrefrensUtils.getDeviceToken(AppController.getInstance()));
                 if (mLocation == null) {
-                    mJosn.put("lat", PrefrensUtils.getLat(this));
-                    mJosn.put("long", PrefrensUtils.getLong(this));
+                    mJosn.put("latService", PrefrensUtils.getLat(this));
+                    mJosn.put("longService", PrefrensUtils.getLong(this));
                 } else {
-                    mJosn.put("lat", mLocation.getLatitude());
-                    mJosn.put("long", mLocation.getLongitude());
+                    mJosn.put("latService", mLocation.getLatitude());
+                    mJosn.put("longService", mLocation.getLongitude());
                 }
-
-                mJosn.put("userid", PrefrensUtils.getUserID(AppController.getInstance()));
                 new SendToDataLayerThread("/path", mJosn.toString()).start();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -199,6 +197,7 @@ public class LocationServiceCommunicator extends Service implements LocationList
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("latitude", latitude);
             jsonObject.put("longitude", longitude);
+
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                     url, jsonObject,
                     new Response.Listener<JSONObject>() {
@@ -250,8 +249,8 @@ public class LocationServiceCommunicator extends Service implements LocationList
                                     startLocationUpdates();
                                     requestUpdateLocation(true);
                                 } else {
-                                    stopLocationUpdates();
-                                    requestUpdateLocation(false);
+                                  //  stopLocationUpdates();
+                                   // requestUpdateLocation(false);
                                 }
                             } catch (Exception e) {
 
@@ -279,8 +278,9 @@ public class LocationServiceCommunicator extends Service implements LocationList
         r4 = new Runnable() {
             public void run() {
                 if (mLocation != null) {
+                    System.out.print("INSIDESENDINGLOCATION");
                     isClickedLocation = true;
-                    isLocationTimeCompleted= false;
+                    isLocationTimeCompleted = false;
                     UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "updatelocation");
                 }
                 handler8.postDelayed(r4, 60000);
@@ -290,34 +290,33 @@ public class LocationServiceCommunicator extends Service implements LocationList
     }
 
     // This method will stop the assistance thread after one hour
-    public static void stopAssisatnceService(){
+    public static void stopAssisatnceService() {
         handler7 = new Handler();
         r7 = new Runnable() {
             public void run() {
-                System.out.print("INSIDE");
+                System.out.print("INSIDESTOPLOCATION");
                 handler8.removeCallbacks(r4);
-                isClickedLocation=false;
+                isClickedLocation = false;
                 isLocationTimeCompleted = true;
             }
         };
-        handler7.postDelayed(r7, System.currentTimeMillis() + 60 * 60 * 1000);
+         handler7.postDelayed(r7, 60 * 60 * 1000);
     }
 
-    public static void requestUpdateLocation(final boolean what) {
+    public static void stopAssisatnceServiceFromHomeScreen() {
+        if(handler8!=null){
+            handler8.removeCallbacks(r4);
+        }
 
-                final String mValue = PrefrensUtils.getTimeInterval(AppController.getInstance());
-                handler1 = new Handler();
-                 r3 = new Runnable() {
-                    public void run() {
-                        if (mLocation != null) {
-                            if(what){
-                                UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "updatelocation");
-                            }
-                        }
-                        handler1.postDelayed(r3, (Integer.parseInt(mValue)*60000));
-                    }
-                };
-        handler1.post(r3);
+        if(handler7!=null){
+            handler7.removeCallbacks(r7);
+        }
+    }
+
+
+    public  void requestUpdateLocation(final boolean what) {
+                        UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "updatelocation");
+                        stopLocationUpdates();
     }
 
     //This method will start the location updates
@@ -346,7 +345,7 @@ public class LocationServiceCommunicator extends Service implements LocationList
     }
 
     protected synchronized void buildGoogleApiClient() {
-        isWithoutWear=false;
+        isWithoutWear = false;
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this).addApi(Wearable.API)
                 .addOnConnectionFailedListener(this)

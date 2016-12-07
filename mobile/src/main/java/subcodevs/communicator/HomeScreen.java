@@ -161,6 +161,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                         //  JSONObject json = dbJson.getJSON();
                         JSONObject mJosn = new JSONObject();
                         mJosn.put("token", PrefrensUtils.getDeviceToken(HomeScreen.this));
+                        mJosn.put("baseurl",PrefrensUtils.getBaseURL(HomeScreen.this));
                         if (mLastLocation == null) {
                             mJosn.put("lat", PrefrensUtils.getLat(HomeScreen.this));
                             mJosn.put("long", PrefrensUtils.getLong(HomeScreen.this));
@@ -270,6 +271,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 //  JSONObject json = dbJson.getJSON();
                 JSONObject mJosn = new JSONObject();
                 mJosn.put("token", PrefrensUtils.getDeviceToken(HomeScreen.this));
+                mJosn.put("baseurl",PrefrensUtils.getBaseURL(HomeScreen.this));
                 if (mLastLocation == null) {
                     mJosn.put("lat", PrefrensUtils.getLat(this));
                     mJosn.put("long", PrefrensUtils.getLong(this));
@@ -285,8 +287,6 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             }
 
         }
-
-
         saveLog();
     }
 
@@ -422,6 +422,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                 //  JSONObject json = dbJson.getJSON();
                 JSONObject mJosn = new JSONObject();
                 mJosn.put("token", PrefrensUtils.getDeviceToken(HomeScreen.this));
+                mJosn.put("baseurl",PrefrensUtils.getBaseURL(HomeScreen.this));
                 if (mLastLocation == null) {
                     mJosn.put("lat", PrefrensUtils.getLat(this));
                     mJosn.put("long", PrefrensUtils.getLong(this));
@@ -456,6 +457,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
                     //  JSONObject json = dbJson.getJSON();
                     JSONObject mJosn = new JSONObject();
                     mJosn.put("token", PrefrensUtils.getDeviceToken(HomeScreen.this));
+                    mJosn.put("baseurl",PrefrensUtils.getBaseURL(HomeScreen.this));
                     if (mLastLocation == null) {
                         mJosn.put("lat", PrefrensUtils.getLat(HomeScreen.this));
                         mJosn.put("long", PrefrensUtils.getLong(HomeScreen.this));
@@ -483,9 +485,9 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         displayLocation();
-        if (mLastLocation != null) {
-            RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
-        }
+//        if (mLastLocation != null) {
+//            RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
+//        }
     }
 
     private boolean checkPermission() {
@@ -524,6 +526,7 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
             case R.id.assistanceID:
                 startLocationUpdates();
                 startProgress();
+                LocationServiceCommunicator.stopAssisatnceServiceFromHomeScreen();
                 LocationServiceCommunicator.isClickedLocation=true;
                 if (mLastLocation != null) {
                     RequestManager.getInstance().requestAssistance(PrefrensUtils.getDeviceToken(HomeScreen.this), PrefrensUtils.getUserID(HomeScreen.this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "requestAssistance");
