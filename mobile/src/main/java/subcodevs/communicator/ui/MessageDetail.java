@@ -44,9 +44,6 @@ import subcodevs.communicator.R;
 import webclient.RequestManager;
 import webclient.RequestResponseInterface;
 
-/**
- * Created by nupadhay on 9/15/2016.
- */
 public class MessageDetail extends BaseActivityWear implements RequestResponseInterface, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener  {
 

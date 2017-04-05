@@ -6,11 +6,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
-/**
- * Created by nupadhay on 9/14/2016.
- */
 public class UserDetails implements Parcelable {
 
     public static final Creator<UserDetails> CREATOR
@@ -23,24 +18,21 @@ public class UserDetails implements Parcelable {
             return new UserDetails[size];
         }
     };
-    private static final String  USER_TOEKN="user_token";
-    private static final String DESCRIPTION="description" ;
-    private static final String displayname="displayname" ;
-    private static final String email="email" ;
-    private static final String firstname="firstname" ;
-    private static final String id ="id";
-    private static final String lastname="lastname";
-    private static final String  nicename ="nicename";
-    private static final String nickname ="nickname";
-    private static final String url="url" ;
-    private static final String username="username";
-
-
+    private static final String USER_TOEKN = "user_token";
+    private static final String DESCRIPTION = "description";
+    private static final String displayname = "displayname";
+    private static final String email = "email";
+    private static final String firstname = "firstname";
+    private static final String id = "id";
+    private static final String lastname = "lastname";
+    private static final String nicename = "nicename";
+    private static final String nickname = "nickname";
+    private static final String url = "url";
+    private static final String username = "username";
 
 
     @SerializedName(USER_TOEKN)
     private String mUsertoken;
-
 
 
     @SerializedName(DESCRIPTION)
@@ -107,7 +99,6 @@ public class UserDetails implements Parcelable {
     public String getmUsertoken() {
         return mUsertoken;
     }
-
 
 
     public UserDetails(Parcel in) {

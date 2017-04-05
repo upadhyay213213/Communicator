@@ -30,9 +30,6 @@ import appconstant.AppConstatnts;
 import appmanager.AppController;
 import apputils.PrefrensUtils;
 
-/**
- * Created by nupadhay on 11/4/2016.
- */
 public class LocationServiceCommunicator extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = LocationServiceCommunicator.class.getCanonicalName();
     private static boolean isLocationTimeCompleted;
@@ -68,6 +65,7 @@ public class LocationServiceCommunicator extends Service implements LocationList
         String mValue1 = PrefrensUtils.getTimeInterval(AppController.getInstance());
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        // Check this and try to manupulate
         if (mValue.equals("true")) {
             mLocationRequest.setInterval(6000);
             mLocationRequest.setFastestInterval(4000);
@@ -103,13 +101,12 @@ public class LocationServiceCommunicator extends Service implements LocationList
         handler9 = new Handler();
         r8 = new Runnable() {
             public void run() {
-                if (isClickedLocation) {
-                    if (mLocation != null) {
-                        // This will call location update every two hours to server and will update the user location on server
-                        UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "");
-                    }
+                if (mLocation != null) {
+                    // This will call location update every two hours to server and will update the user location on server
+                    UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "");
                 }
-                  handler9.postDelayed(r8, (60 * 60 * 1000)+(60*60*1000));
+                //              }
+                handler9.postDelayed(r8, (60 * 60 * 1000) + (60 * 60 * 1000));
             }
         };
         handler9.post(r8);
@@ -146,7 +143,7 @@ public class LocationServiceCommunicator extends Service implements LocationList
             public void run() {
                 //This will keep checking the server flag for demanding the location every five minutes to ensure that if server is asking for location then it must provide the same
                 checkLocationFlagFromServer();
-                handler2.postDelayed(r2, 1000);
+                handler2.postDelayed(r2, 300000);
             }
         };
         handler1.post(r2);
@@ -173,7 +170,6 @@ public class LocationServiceCommunicator extends Service implements LocationList
         mLocation = location;
         if (!isWithoutWear) {
             try {
-                //  JSONObject json = dbJson.getJSON();
                 JSONObject mJosn = new JSONObject();
                 if (mLocation == null) {
                     mJosn.put("latService", PrefrensUtils.getLat(this));
@@ -224,7 +220,6 @@ public class LocationServiceCommunicator extends Service implements LocationList
             AppController.getInstance().getRequestQueue().add(jsonObjReq);
 
         } catch (Exception e) {
-            System.out.println("requestexecption" + e.getMessage());
         }
     }
 
@@ -241,16 +236,11 @@ public class LocationServiceCommunicator extends Service implements LocationList
 
                             try {
                                 JSONObject mJosn = new JSONObject(response.toString());
-
                                 mValue = mJosn.getString("sendtime");
-                                System.out.println("checking the value" + mValue);
-
                                 if (mValue.equals("true") && !isClickedLocation) {
                                     startLocationUpdates();
                                     requestUpdateLocation(true);
                                 } else {
-                                  //  stopLocationUpdates();
-                                   // requestUpdateLocation(false);
                                 }
                             } catch (Exception e) {
 
@@ -266,7 +256,6 @@ public class LocationServiceCommunicator extends Service implements LocationList
             AppController.getInstance().getRequestQueue().add(jsonObjReq);
 
         } catch (Exception e) {
-            System.out.println("requestexecption" + e.getMessage());
         }
 
     }
@@ -278,7 +267,6 @@ public class LocationServiceCommunicator extends Service implements LocationList
         r4 = new Runnable() {
             public void run() {
                 if (mLocation != null) {
-                    System.out.print("INSIDESENDINGLOCATION");
                     isClickedLocation = true;
                     isLocationTimeCompleted = false;
                     UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "updatelocation");
@@ -294,29 +282,28 @@ public class LocationServiceCommunicator extends Service implements LocationList
         handler7 = new Handler();
         r7 = new Runnable() {
             public void run() {
-                System.out.print("INSIDESTOPLOCATION");
                 handler8.removeCallbacks(r4);
                 isClickedLocation = false;
                 isLocationTimeCompleted = true;
             }
         };
-         handler7.postDelayed(r7, 60 * 60 * 1000);
+        handler7.postDelayed(r7, 60 * 60 * 1000);
     }
 
     public static void stopAssisatnceServiceFromHomeScreen() {
-        if(handler8!=null){
+        if (handler8 != null) {
             handler8.removeCallbacks(r4);
         }
 
-        if(handler7!=null){
+        if (handler7 != null) {
             handler7.removeCallbacks(r7);
         }
     }
 
 
-    public  void requestUpdateLocation(final boolean what) {
-                        UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "updatelocation");
-                        stopLocationUpdates();
+    public void requestUpdateLocation(final boolean what) {
+        UpdateLocationRequest(PrefrensUtils.getUserID(AppController.getInstance()), PrefrensUtils.getDeviceToken(AppController.getInstance()), String.valueOf(mLocation.getLatitude()), String.valueOf(mLocation.getLongitude()), "updatelocation");
+        stopLocationUpdates();
     }
 
     //This method will start the location updates

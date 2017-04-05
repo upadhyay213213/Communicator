@@ -1,10 +1,5 @@
 package model;
 
-import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by nupadhay on 9/19/2016.
- */
 public class MessageResposneDatabase {
 
     private String mID;

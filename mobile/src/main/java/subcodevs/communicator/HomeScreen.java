@@ -54,7 +54,6 @@ import java.util.Timer;
 
 import apputils.PrefrensUtils;
 import commonmodules.BaseActivityWear;
-import location.LocationService;
 import location.LocationServiceCommunicator;
 import model.PushToken;
 import subcodevs.communicator.pushcontroller.GCMRegistrationIntentService;
@@ -485,9 +484,6 @@ public class HomeScreen extends BaseActivityWear implements GoogleApiClient.Conn
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         displayLocation();
-//        if (mLastLocation != null) {
-//            RequestManager.getInstance().UpdateLocationRequest(PrefrensUtils.getUserID(HomeScreen.this), PrefrensUtils.getDeviceToken(this), String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), "UpdateLocationRequest");
-//        }
     }
 
     private boolean checkPermission() {

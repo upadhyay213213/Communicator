@@ -12,9 +12,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/**
- * Created by nupadhay on 9/20/2016.
- */
+
 public class CommonUtils {
 
 

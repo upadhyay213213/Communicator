@@ -5,15 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import model.MessageResponse;
 import model.MessageResposneDatabase;
 
-/**
- * Created by nupadhay on 5/17/2016.
- */
 public class DataBaseQuery {
 
     public static void insertMessageToDB(MessageResponse response, Context context) {
@@ -29,15 +25,15 @@ public class DataBaseQuery {
             statement.bindString(3, response.getmMessage());
             statement.bindString(4, response.getmNotif_Message());
             statement.bindString(5, response.getmTime());
-           if(response.getmSenderID()==null){
-               statement.bindString(6, "");
-           }else{
-               statement.bindString(6, response.getmSenderID());
-           }
+            if (response.getmSenderID() == null) {
+                statement.bindString(6, "");
+            } else {
+                statement.bindString(6, response.getmSenderID());
+            }
 
-            if(response.getMmSenderUserName()==null){
+            if (response.getMmSenderUserName() == null) {
                 statement.bindString(7, "");
-            }else {
+            } else {
                 statement.bindString(7, response.getMmSenderUserName());
             }
 
@@ -50,17 +46,15 @@ public class DataBaseQuery {
     }
 
 
-    public  static void updateMessageStatus(String productID,String messageStatus){
-           String query = "UPDATE messages set ismessageread=? WHERE id=?";
-            SQLiteDatabase db = DatabaseHelper.getSqliteDatabase();
-            SQLiteStatement statement = db.compileStatement(query);
-            statement.bindString(1,messageStatus);
-            statement.bindString(2, productID);
+    public static void updateMessageStatus(String productID, String messageStatus) {
+        String query = "UPDATE messages set ismessageread=? WHERE id=?";
+        SQLiteDatabase db = DatabaseHelper.getSqliteDatabase();
+        SQLiteStatement statement = db.compileStatement(query);
+        statement.bindString(1, messageStatus);
+        statement.bindString(2, productID);
         statement.execute();
         statement.close();
-        }
-
-
+    }
 
 
     public static ArrayList<MessageResposneDatabase> getMessageResponse() {

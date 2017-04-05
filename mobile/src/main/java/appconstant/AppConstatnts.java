@@ -3,9 +3,6 @@ package appconstant;
 import appmanager.AppController;
 import apputils.PrefrensUtils;
 
-/**
- * Created by nupadhay on 9/14/2016.
- */
 public class AppConstatnts {
     public static String LOGIN_URL=getBaseURL()+"wp-json/v1/account/login";
 

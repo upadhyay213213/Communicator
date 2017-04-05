@@ -8,9 +8,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-/**
- * Created by nupadhay on 9/17/2016.
- */
 public class MessageResponseFirst implements Parcelable {
 
 

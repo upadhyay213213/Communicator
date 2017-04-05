@@ -96,11 +96,9 @@ public class MessageScreen extends BaseActivityWear implements RequestResponseIn
 
     @Override
     public void responseListener(Object o, String calltype) {
-        System.out.println("ResponseHomeScreen" + o.toString());
         Gson gson = new Gson();
         if (calltype.equals("RequestMessage")) {
             MessageResponseFirst response = gson.fromJson(o.toString(), MessageResponseFirst.class);
-            System.out.println("ResponseHomeScreen" + response.getContacts().get(0).getMmSenderUserName());
             intsertToDatabase(response);
         } else {
             handler = new Handler();

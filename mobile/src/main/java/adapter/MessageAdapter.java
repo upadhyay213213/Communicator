@@ -19,9 +19,6 @@ import model.MessageResposneDatabase;
 import subcodevs.communicator.R;
 import subcodevs.communicator.ui.MessageDetail;
 
-/**
- * Created by nupadhay on 9/19/2016.
- */
 public class MessageAdapter extends BaseAdapter {
 
     private Context mCtx;

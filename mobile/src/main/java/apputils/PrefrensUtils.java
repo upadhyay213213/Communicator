@@ -5,9 +5,7 @@ import android.content.SharedPreferences;
 
 import subcodevs.communicator.HomeScreen;
 
-/**
- * Created by nupadhay on 9/15/2016.
- */
+
 public class PrefrensUtils {
     private static SharedPreferences sharedpreferences;
     private  static String KEY_DEVICE_TOKEN="device_token";
@@ -158,7 +156,7 @@ public class PrefrensUtils {
 
     public static String getBaseURL(Context context) {
         sharedpreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
-        return sharedpreferences.getString(KEY_URL, "http://residentcommunicator.net/");
+        return sharedpreferences.getString(KEY_URL, "https://residentcommunicator.net/");
     }
 
 

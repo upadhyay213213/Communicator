@@ -25,9 +25,6 @@ import subcodevs.communicator.R;
 import subcodevs.communicator.SettingScreen;
 import subcodevs.communicator.ui.LoginScreen;
 
-/**
- * Created by nupadhay on 10/14/2015.
- */
 public class BaseActivityWear extends FragmentActivity {
 
     private ProgressDialog mProgressDialog;
@@ -131,30 +128,21 @@ public class BaseActivityWear extends FragmentActivity {
                 message ="Bad Request.";
                         break;
             default: message="Something went wrong. Please try again later.";
-
         }
         buildAlertMessageNoGps(ctx, message);
     }
 
     public void sendMail() {
         String root = Environment.getExternalStorageDirectory().toString();
-
         String fileConnectExisting = root + "/Communicator_LOGS/communicator.txt";
-
-        //Intent emailIntent = new Intent(Intent.ACTION_SEND);
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        // set the type to 'email'
         emailIntent.setType("text/plain");
         String to[] = {"rescommsupport@subcodevs.com"};
         emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
-        // the attachment
         ArrayList<Uri> uris = new ArrayList<Uri>();
         Uri u1 = Uri.parse("file://" + fileConnectExisting);
         uris.add(u1);
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        //emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fileConnectExisting));
-        //emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fileSetupNew));
-        // the mail subject
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Communicator Android App Logs");
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }

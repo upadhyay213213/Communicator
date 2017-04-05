@@ -16,11 +16,7 @@ import subcodevs.communicator.R;
 import subcodevs.communicator.ui.MessageDetail;
 
 
-/**
- * Created by nandan
- */
 
-//Class is extending GcmListenerService
 public class GCMPushReceiverService extends GcmListenerService {
 
     //This method will be called on every new message received
@@ -30,8 +26,7 @@ public class GCMPushReceiverService extends GcmListenerService {
         String message = data.getString("message");
         String messageID = data.getString("message_id");
 
-
-        //Displaying a notiffication with the message
+        //Displaying a notification with the message
         try{
             sendNotification(message, messageID);
         }catch (Exception e){

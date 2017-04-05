@@ -6,9 +6,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by nupadhay on 9/16/2016.
- */
 public class PushToken implements Parcelable {
 
     public static final Creator<PushToken> CREATOR
@@ -22,16 +19,11 @@ public class PushToken implements Parcelable {
         }
     };
 
-    private static final String MD_DEVICE_TOKEN="md5device_token";
-
-
+    private static final String MD_DEVICE_TOKEN = "md5device_token";
 
 
     @SerializedName(MD_DEVICE_TOKEN)
     private String mdDeviceToken;
-
-
-
 
 
     public String getMdDeviceToken() {

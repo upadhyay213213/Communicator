@@ -10,9 +10,6 @@ import org.json.JSONObject;
 import appconstant.AppConstatnts;
 import appmanager.AppController;
 
-/**
- * Created by nupadhay on 10/15/2015.
- */
 public class RequestManager {
 
     public static RequestManager mRequestManager = new RequestManager();

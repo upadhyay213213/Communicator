@@ -22,9 +22,6 @@ import subcodevs.communicator.SettingScreen;
 import webclient.RequestManager;
 import webclient.RequestResponseInterface;
 
-/**
- * Created by nupadhay on 9/15/2016.
- */
 public class LoginScreen extends BaseActivityWear implements View.OnClickListener, RequestResponseInterface {
     private EditText mLogin;
     private EditText mPassword;
